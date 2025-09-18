@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>动态渐变文字</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      @property --color-1 {
+        syntax: "<color>";
+        inherits: false;
+        initial-value: hsl(98 100% 62%);
+      }
+      @property --color-2 {
+        syntax: "<color>";
+        inherits: false;
+        initial-value: hsl(204 100% 59%);
+      }
+      @-webkit-keyframes gradient-change {
+        to {
+          --color-1: hsl(210 100% 59%);
+          --color-2: hsl(310 100% 59%);
+        }
+      }
+      @keyframes gradient-change {
+        to {
+          --color-1: hsl(210 100% 59%);
+          --color-2: hsl(310 100% 59%);
+        }
+      }
+
+      article {
+        -webkit-animation: gradient-change 2s linear infinite alternate;
+        animation: gradient-change 2s linear infinite alternate;
+
+        background: linear-gradient(
+          to right in oklch,
+          var(--color-1),
+          var(--color-2)
+        );
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        background-clip: text;
+        color: transparent;
+      }
+
+      h1 {
+        font-size: 4vh;
+      }
+    </style>
+  </head>
+  <body>
+    <article>
+      <h1>SoundTech&nbsp;声像科技</h1>
+    </article>
+  </body>
+</html>
