@@ -23,6 +23,16 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 ##################
 
 def login_required(function):
+    """
+    装饰器函数，用于检查用户是否已登录。
+    如果用户未登录，则重定向到登录页面。
+    
+    Args:
+        function: 需要登录验证的函数
+        
+    Returns:
+        装饰后的函数
+    """
     @wraps(function)
     def decorated_function(*args, **kwargs):
         if not is_logged_in():
@@ -32,9 +42,21 @@ def login_required(function):
     return decorated_function
 
 def is_logged_in() -> bool:
+    """
+    检查当前用户是否已登录。
+    
+    Returns:
+        bool: 如果用户已登录返回 True，否则返回 False
+    """
     return "user_id" in session
 
 def get_user_id() -> int:
+    """
+    获取当前登录用户的 ID。
+    
+    Returns:
+        int: 当前用户的 ID，如果未登录则返回 None
+    """
     return session.get("user_id")
 
 #############################
@@ -43,6 +65,15 @@ def get_user_id() -> int:
 
 # todo
 def fetch_question(qid):
+    """
+    根据题目 ID 从数据库中获取题目信息。
+    
+    Args:
+        qid: 题目 ID
+        
+    Returns:
+        dict: 包含题目信息的字典，如果题目不存在则返回 None
+    """
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM questions WHERE id=?', (qid,))
@@ -65,6 +96,15 @@ def fetch_question(qid):
 
 # todo
 def random_question_id(user_id):
+    """
+    为指定用户随机选择一个未答过的题目 ID。
+    
+    Args:
+        user_id: 用户 ID
+        
+    Returns:
+        int: 随机题目 ID，如果没有未答题目则返回 None
+    """
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''
@@ -86,6 +126,15 @@ def random_question_id(user_id):
 
 # todo
 def fetch_random_question_ids(num):
+    """
+    随机获取指定数量的题目 ID 列表。
+    
+    Args:
+        num: 需要获取的题目数量
+        
+    Returns:
+        list: 题目 ID 列表
+    """
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT id FROM questions ORDER BY RANDOM() LIMIT ?', (num,))
@@ -96,6 +145,16 @@ def fetch_random_question_ids(num):
 
 # todo
 def is_favorite(user_id, question_id):
+    """
+    检查指定题目是否被用户收藏。
+    
+    Args:
+        user_id: 用户 ID
+        question_id: 题目 ID
+        
+    Returns:
+        bool: 如果题目被收藏返回 True，否则返回 False
+    """
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT 1 FROM favorites WHERE user_id=? AND question_id=?', (user_id, question_id))
@@ -110,6 +169,13 @@ def is_favorite(user_id, question_id):
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    """
+    用户注册路由。
+    处理用户注册请求，包括表单验证、用户名重复检查和密码加密存储。
+    
+    Returns:
+        Response: 注册页面或重定向到登录页面
+    """
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -150,6 +216,13 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    """
+    用户登录路由。
+    处理用户登录请求，验证用户名和密码，设置会话状态。
+    
+    Returns:
+        Response: 登录页面或重定向到主页面
+    """
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -180,6 +253,13 @@ def login():
 
 @app.route("/logout")
 def logout():
+    """
+    用户登出路由。
+    清除用户会话信息，重定向到登录页面。
+    
+    Returns:
+        Response: 重定向到登录页面
+    """
     session.clear()
     flash("您已成功退出登录", "success")
     return redirect(url_for("login"))
@@ -191,6 +271,13 @@ def logout():
 @app.route("/")
 @login_required
 def index():
+    """
+    应用主页路由。
+    显示应用主页，包含当前用户的顺序答题进度信息。
+    
+    Returns:
+        Response: 渲染的主页模板
+    """
     user_id = get_user_id()
     conn = get_db()
     cursor = conn.cursor()
@@ -205,6 +292,13 @@ def index():
 @app.route("/reset_history", methods=['POST'])
 @login_required
 def reset_history():
+    """
+    重置用户答题历史路由。
+    清除当前用户的所有答题历史记录和顺序答题进度。
+    
+    Returns:
+        Response: 重定向到随机题目页面
+    """
     user_id = get_user_id()
     
     try:
@@ -228,6 +322,13 @@ def reset_history():
 @app.route("/random", methods=['GET'])
 @login_required
 def random_question():
+    """
+    随机题目路由。
+    为当前用户随机选择一个未答过的题目进行展示。
+    
+    Returns:
+        Response: 渲染的题目页面
+    """
     user_id = get_user_id()
     qid = random_question_id(user_id)
     
@@ -256,6 +357,16 @@ def random_question():
 @app.route("/question/<qid>", methods=['GET', 'POST'])
 @login_required
 def show_question(qid):
+    """
+    显示指定题目路由。
+    展示指定 ID 的题目，处理用户答题提交。
+    
+    Args:
+        qid: 题目 ID
+        
+    Returns:
+        Response: 渲染的题目页面或重定向
+    """
     user_id = get_user_id()
     question = fetch_question(qid)
     
@@ -312,6 +423,13 @@ def show_question(qid):
 @app.route("/history")
 @login_required
 def show_history():
+    """
+    显示答题历史路由。
+    展示当前用户的所有答题历史记录。
+    
+    Returns:
+        Response: 渲染的历史页面
+    """
     user_id = get_user_id()
     conn = get_db()
     cursor = conn.cursor()
@@ -338,6 +456,13 @@ def show_history():
 @app.route("/search", methods=['GET', 'POST'])
 @login_required
 def search():
+    """
+    题目搜索路由。
+    根据关键词搜索题目内容。
+    
+    Returns:
+        Response: 渲染的搜索结果页面
+    """
     query = request.form.get('query', '')
     results = []
     
@@ -361,6 +486,13 @@ def search():
 @app.route("/wrong")
 @login_required
 def wrong_questions():
+    """
+    错题集路由。
+    显示当前用户所有答错的题目列表。
+    
+    Returns:
+        Response: 渲染的错题页面
+    """
     user_id = get_user_id()
     conn = get_db()
     cursor = conn.cursor()
@@ -382,6 +514,13 @@ def wrong_questions():
 @app.route("/only_wrong")
 @login_required
 def only_wrong_mode():
+    """
+    错题练习模式路由。
+    随机选择一个用户答错的题目进行练习。
+    
+    Returns:
+        Response: 渲染的题目页面或重定向到主页
+    """
     user_id = get_user_id()
     conn = get_db()
     cursor = conn.cursor()
@@ -409,6 +548,13 @@ def only_wrong_mode():
 @app.route("/browse")
 @login_required
 def browse_questions():
+    """
+    浏览题目路由。
+    分页显示所有题目列表，支持页面导航。
+    
+    Returns:
+        Response: 渲染的题目浏览页面
+    """
     user_id = get_user_id()
     page = request.args.get('page', 1, type=int)
     question_type = request.args.get('type', '')
@@ -494,6 +640,13 @@ def browse_questions():
 @app.route("/filter", methods=['GET', 'POST'])
 @login_required
 def filter_questions():
+    """
+    题目过滤路由。
+    根据题目类型、难度等条件过滤题目。
+    
+    Returns:
+        Response: 渲染的过滤结果页面
+    """
     conn = get_db()
     cursor = conn.cursor()
     
@@ -545,6 +698,16 @@ def filter_questions():
 @app.route("/favorite/<qid>", methods=['POST'])
 @login_required
 def favorite_question(qid):
+    """
+    收藏题目路由。
+    将指定题目添加到用户收藏夹。
+    
+    Args:
+        qid: 题目 ID
+        
+    Returns:
+        Response: JSON 响应表示操作结果
+    """
     user_id = get_user_id()
     
     conn = get_db()
@@ -568,6 +731,16 @@ def favorite_question(qid):
 @app.route("/unfavorite/<qid>", methods=['POST'])
 @login_required
 def unfavorite_question(qid):
+    """
+    取消收藏题目路由。
+    将指定题目从用户收藏夹中移除。
+    
+    Args:
+        qid: 题目 ID
+        
+    Returns:
+        Response: JSON 响应表示操作结果
+    """
     user_id = get_user_id()
     
     conn = get_db()
@@ -591,6 +764,16 @@ def unfavorite_question(qid):
 @app.route("/update_tag/<qid>", methods=['POST'])
 @login_required
 def update_tag(qid):
+    """
+    更新题目标签路由。
+    为收藏的题目添加或更新标签。
+    
+    Args:
+        qid: 题目 ID
+        
+    Returns:
+        Response: JSON 响应表示操作结果
+    """
     if not is_logged_in():
         return jsonify({"success": False, "msg": "未登录"}), 401
     
@@ -613,6 +796,13 @@ def update_tag(qid):
 @app.route("/favorites")
 @login_required
 def show_favorites():
+    """
+    显示收藏夹路由。
+    展示当前用户的所有收藏题目。
+    
+    Returns:
+        Response: 渲染的收藏夹页面
+    """
     user_id = get_user_id()
     
     conn = get_db()
@@ -639,6 +829,13 @@ def show_favorites():
 @app.route("/sequential_start")
 @login_required
 def sequential_start():
+    """
+    顺序模式开始路由。
+    开始顺序答题模式，从第一题开始。
+    
+    Returns:
+        Response: 重定向到第一题或渲染页面
+    """
     user_id = get_user_id()
     conn = get_db()
     cursor = conn.cursor()
@@ -690,6 +887,16 @@ def sequential_start():
 @app.route("/sequential/<qid>", methods=['GET', 'POST'])
 @login_required
 def show_sequential_question(qid):
+    """
+    顺序模式题目显示路由。
+    在顺序模式中显示指定题目并处理答题。
+    
+    Args:
+        qid: 题目 ID
+        
+    Returns:
+        Response: 渲染的题目页面或重定向
+    """
     user_id = get_user_id()
     question = fetch_question(qid)
     
@@ -789,11 +996,25 @@ def show_sequential_question(qid):
 @app.route("/modes")
 @login_required
 def modes():
+    """
+    模式选择路由。
+    显示各种答题模式的选择页面。
+    
+    Returns:
+        Response: 渲染的模式选择页面
+    """
     return render_template("index.html", mode_select=True, current_year=datetime.now(UTC).year)
 
 @app.route("/start_timed_mode", methods=['POST'])
 @login_required
 def start_timed_mode():
+    """
+    开始定时模式路由。
+    启动定时答题模式并设置参数。
+    
+    Returns:
+        Response: 重定向到定时模式页面
+    """
     user_id = get_user_id()
     
     question_count = int(request.form.get('question_count', 5))
@@ -860,6 +1081,13 @@ def timed_mode():
 @app.route('/submit_timed_mode', methods=['POST', 'GET'])
 @login_required
 def submit_timed_mode():
+    """
+    提交定时模式答案路由。
+    处理定时模式中的答案提交。
+    
+    Returns:
+        Response: JSON 响应或重定向
+    """
     user_id = get_user_id()
     exam_id = session.get('current_exam_id')
     
@@ -913,6 +1141,13 @@ def submit_timed_mode():
 @app.route("/start_exam", methods=['POST'])
 @login_required
 def start_exam():
+    """
+    开始考试路由。
+    启动考试模式并设置考试参数。
+    
+    Returns:
+        Response: 重定向到考试页面
+    """
     user_id = get_user_id()
     
     question_count = int(request.form.get('question_count', 10))
@@ -946,6 +1181,13 @@ def start_exam():
 @app.route("/exam")
 @login_required
 def exam():
+    """
+    考试模式路由。
+    进入考试模式进行答题。
+    
+    Returns:
+        Response: 渲染的考试页面
+    """
     user_id = get_user_id()
     exam_id = session.get('current_exam_id')
     
@@ -972,6 +1214,13 @@ def exam():
 @app.route("/submit_exam", methods=['POST'])
 @login_required
 def submit_exam():
+    """
+    提交考试答案路由。
+    处理考试模式中的答案提交。
+    
+    Returns:
+        Response: 重定向到结果页面
+    """
     user_id = get_user_id()
     exam_id = session.get('current_exam_id')
     
@@ -1157,19 +1406,50 @@ def statistics():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """
+    404 错误处理函数。
+    处理页面未找到的错误。
+    
+    Args:
+        e: 错误对象
+        
+    Returns:
+        Response: 渲染的 404 错误页面
+    """
     return render_template("error.html", error_code=404, error_message="页面不存在"), 404
 
 @app.errorhandler(500)
 def server_error(e):
+    """
+    500 错误处理函数。
+    处理服务器内部错误。
+    
+    Args:
+        e: 错误对象
+        
+    Returns:
+        Response: 渲染的 500 错误页面
+    """
     return render_template("error.html", error_code=500, error_message="服务器内部错误"), 500
+
+#############
+# Test Page #
+#############
 
 @app.route("/test")
 def test():
+    """
+    测试页面路由。
+    用于测试功能的页面。
+    
+    Returns:
+        Response: 渲染的测试页面
+    """
     return render_template("test.html")
 
-###########################
+###############################
 # Application Entrytest Point #
-###########################
+###############################
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True, port=80)
