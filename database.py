@@ -68,7 +68,10 @@ def init_db() -> None:
 
     cursor.execute('SELECT COUNT(*) as cnt FROM questions')
     if cursor.fetchone()['cnt'] == 0:
-        load_questions_to_db(conn)
+        try:
+            load_questions_to_db(conn)
+        except Exception as e:
+            print(f"\033[33m{e}\033[0m")
 
     cursor.close()
     conn.close()
@@ -96,9 +99,7 @@ def load_questions_to_db(conn: sqlite3.Connection) -> None:
                     ),
                 )
             conn.commit()
-    except FileNotFoundError:
-        print("Warning: questions.csv file not found. No questions loaded.")
     except Exception as e:
-        print(f"Error loading questions: {e}")
+        print(f"\033[33m{e}\033[0m")
 
 init_db()
