@@ -63,7 +63,6 @@ def get_user_id() -> int:
 # Question Helper Functions #
 #############################
 
-# todo
 def fetch_question(qid):
     """
     根据题目 ID 从数据库中获取题目信息。
@@ -94,7 +93,6 @@ def fetch_question(qid):
     else:
         return None
 
-# todo
 def random_question_id(user_id):
     """
     为指定用户随机选择一个未答过的题目 ID。
@@ -124,7 +122,6 @@ def random_question_id(user_id):
     else:
         return None
 
-# todo
 def fetch_random_question_ids(num):
     """
     随机获取指定数量的题目 ID 列表。
@@ -143,7 +140,6 @@ def fetch_random_question_ids(num):
     conn.close()
     return [row['id'] for row in rows]
 
-# todo
 def is_favorite(user_id, question_id):
     """
     检查指定题目是否被用户收藏。
