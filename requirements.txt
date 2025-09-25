@@ -1,6 +1,5 @@
-Flask
-Werkzeug
-Jinja2
-MarkupSafe
-itsdangerous
-click
+fastapi
+uvicorn[standard]
+python-multipart
+jinja2
+starlette
