@@ -12,7 +12,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from database import get_db
+from handlers.database import get_db
 
 app = FastAPI(title="SoundTech Question System")
 
