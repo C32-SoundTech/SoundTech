@@ -107,7 +107,7 @@ def flash_message(request: Request, message: str, category: str = "info"):
 def get_flash_messages(request: Request) -> List[Dict[str, str]]:
     """获取并清除闪现消息"""
     messages = request.session.get("flash_messages", [])
-    request.session["flash_messages"] = []
+    # request.session["flash_messages"] = []
     return messages
 
 #############################
