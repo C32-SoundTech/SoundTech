@@ -10,7 +10,7 @@ from flask import flash, jsonify, url_for, redirect, render_template
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from database import get_db
+from handlers.database import get_db
 
 app = Flask(__name__)
 
