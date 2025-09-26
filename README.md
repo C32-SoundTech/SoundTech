@@ -1,6 +1,9 @@
 ## 声像科技 SoundTech
 
-![Dingdust](https://github-readme-stats.vercel.app/api?username=Dingdust&show_icons=true&theme=dark&count_private=true&commits_year=2025&theme=transparent&hide=stars,prs,issues,contribs&hide_rank=true&locale=cn&hide_border=true&custom_title=丁炜宸)![wswCR7](https://github-readme-stats.vercel.app/api?username=wswCR7&show_icons=true&theme=dark&count_private=true&commits_year=2025&theme=transparent&hide=stars,prs,issues,contribs&hide_rank=true&locale=cn&hide_border=true&custom_title=吴沈炜)
+---
 
-![yuz](https://github-readme-stats.vercel.app/api?username=yuz&show_icons=true&theme=dark&count_private=true&commits_year=2025&theme=transparent&hide=stars,prs,issues,contribs&hide_rank=true&locale=cn&hide_border=true&custom_title=吴育金)![GloriousEpiphany](https://github-readme-stats.vercel.app/api?username=GloriousEpiphany&show_icons=true&theme=dark&count_private=true&commits_year=2025&theme=transparent&hide=stars,prs,issues,contribs&hide_rank=true&locale=cn&hide_border=true&custom_title=王宇涵)
+![Static Badge](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)![Static Badge](https://img.shields.io/badge/FastAPI-with%20uvicorn-green?logo=FastAPI)
 
+![GitHub Created At](https://img.shields.io/github/created-at/C32-SoundTech/SoundTech?logo=Github)![GitHub contributors](https://img.shields.io/github/contributors/C32-SoundTech/SoundTech?logo=Github)![GitHub last commit](https://img.shields.io/github/last-commit/C32-SoundTech/SoundTech?logo=Github)
+
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/C32-SoundTech/SoundTech?authorFilter=Dingdust&logo=Github)![GitHub commit activity](https://img.shields.io/github/commit-activity/t/C32-SoundTech/SoundTech?authorFilter=GloriousEpiphany&logo=Github)![GitHub commit activity](https://img.shields.io/github/commit-activity/t/C32-SoundTech/SoundTech?authorFilter=wswCR7&logo=Github)![GitHub commit activity](https://img.shields.io/github/commit-activity/t/C32-SoundTech/SoundTech?authorFilter=2778582993&logo=Github)
