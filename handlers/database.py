@@ -4,7 +4,7 @@ import sqlite3
 
 
 def get_db() -> sqlite3.Connection:
-    conn = sqlite3.connect("database.db")
+    conn = sqlite3.connect("./static/database.db")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -78,7 +78,7 @@ def init_db() -> None:
 
 def load_questions_to_db(conn: sqlite3.Connection) -> None:
     try:
-        with open("questions.csv", 'r', encoding="utf-8") as file:
+        with open("./tools/questions.csv", 'r', encoding="utf-8") as file:
             reader = csv.DictReader(file)
             cursor = conn.cursor()
             for row in reader:
