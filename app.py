@@ -1,6 +1,8 @@
 import os
 import json
 import random
+import logging
+import logging.handlers
 from datetime import UTC, datetime, timedelta
 
 from flask import Flask
@@ -17,6 +19,50 @@ app = Flask("SoundTech-声像科技")
 app.secret_key = os.environ.get("SECRET_KEY", __name__)
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
+
+# 配置日志系统
+def setup_logging():
+    """配置应用日志系统"""
+    # 创建logs目录
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+    
+    # 设置日志格式
+    log_format = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    
+    # 配置文件处理器（按日期轮转）
+    file_handler = logging.handlers.TimedRotatingFileHandler(
+        'logs/soundtech.log',
+        when='midnight',
+        interval=1,
+        backupCount=30,
+        encoding='utf-8'
+    )
+    file_handler.setFormatter(log_format)
+    file_handler.setLevel(logging.INFO)
+    
+    # 配置控制台处理器
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(log_format)
+    console_handler.setLevel(logging.DEBUG)
+    
+    # 配置Flask应用日志
+    app.logger.setLevel(logging.DEBUG)
+    app.logger.addHandler(file_handler)
+    app.logger.addHandler(console_handler)
+    
+    # 配置Werkzeug日志（Flask内置服务器日志）
+    werkzeug_logger = logging.getLogger('werkzeug')
+    werkzeug_logger.setLevel(logging.INFO)
+    werkzeug_logger.addHandler(file_handler)
+    
+    # 记录应用启动
+    app.logger.info("SoundTech应用启动，日志系统已配置")
+
+# 初始化日志系统
+setup_logging()
 
 #############################
 # Question Helper Functions #
@@ -182,7 +228,10 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         
+        app.logger.info(f"用户尝试登录: {username}")
+        
         if not username or not password:
+            app.logger.warning(f"登录失败 - 用户名或密码为空: {username}")
             flash("用户名和密码不能为空", "error")
             return render_template("login.html")
         
@@ -195,6 +244,7 @@ def login():
         
         if user and check_password_hash(user['password_hash'], password):
             session['user_id'] = user['id']
+            app.logger.info(f"用户登录成功: {username} (ID: {user['id']})")
             
             next_page = request.args.get('next')
             if next_page and next_page.startswith('/'):
@@ -202,6 +252,7 @@ def login():
                 
             return redirect(url_for("index"))
         else:
+            app.logger.warning(f"登录失败 - 用户名或密码错误: {username}")
             flash("登录失败，用户名或密码错误", "error")
             
     return render_template("login.html")
@@ -215,6 +266,10 @@ def logout():
     Returns:
         Response: 重定向到登录页面
     """
+    user_id = session.get('user_id')
+    if user_id:
+        app.logger.info(f"用户退出登录: ID {user_id}")
+    
     session.clear()
     flash("您已成功退出登录", "success")
     return redirect(url_for("login"))
@@ -1371,6 +1426,7 @@ def page_not_found(e):
     Returns:
         Response: 渲染的 404 错误页面
     """
+    app.logger.warning(f"404错误 - 页面未找到: {request.url} - IP: {request.remote_addr}")
     return render_template("error.html", error_code=404, error_message="页面不存在"), 404
 
 @app.errorhandler(500)
@@ -1385,30 +1441,29 @@ def server_error(e):
     Returns:
         Response: 渲染的 500 错误页面
     """
+    app.logger.error(f"500错误 - 服务器内部错误: {request.url} - IP: {request.remote_addr} - 错误: {str(e)}")
     return render_template("error.html", error_code=500, error_message="服务器内部错误"), 500
-
-#############
-# Test Page #
-#############
-
-@app.route("/test")
-def test():
-    """
-    测试页面路由。
-    用于测试功能的页面。
-    
-    Returns:
-        Response: 渲染的测试页面
-    """
-    return render_template("test.html")
 
 ###########################
 # Application Entry Point #
 ###########################
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=443, ssl_context=('./static/localhost.crt', './static/localhost.key'))
+    app.run(host='0.0.0.0', port=443, debug=True, ssl_context=('./static/localhost.crt', './static/localhost.key'))
 
     # from waitress import serve
     # serve(app, host='0.0.0.0', port=80)
-    
+
+# 添加请求日志中间件
+@app.before_request
+def log_request_info():
+    """记录每个请求的基本信息"""
+    if request.endpoint not in ['static']:  # 排除静态文件请求
+        app.logger.debug(f"请求: {request.method} {request.url} - IP: {request.remote_addr} - User-Agent: {request.headers.get('User-Agent', 'Unknown')}")
+
+@app.after_request
+def log_response_info(response):
+    """记录响应信息"""
+    if request.endpoint not in ['static']:  # 排除静态文件请求
+        app.logger.debug(f"响应: {response.status_code} - {request.method} {request.url}")
+    return response
