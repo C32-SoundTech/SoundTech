@@ -11,7 +11,7 @@ from flask import flash, jsonify, url_for, redirect, render_template
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from handlers.database import get_db
+from handlers.database import get_db, fetch_question, random_question_id, fetch_random_question_ids, is_favorite
 from handlers.authentication import login_required, is_logged_in, get_user_id
 
 app = Flask("SoundTech-声像科技")
@@ -19,150 +19,6 @@ app = Flask("SoundTech-声像科技")
 app.secret_key = os.environ.get("SECRET_KEY", __name__)
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
-
-# 配置日志系统
-def setup_logging():
-    """配置应用日志系统"""
-    # 创建logs目录
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
-    
-    # 设置日志格式
-    log_format = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-    
-    # 配置文件处理器（按日期轮转）
-    file_handler = logging.handlers.TimedRotatingFileHandler(
-        'logs/soundtech.log',
-        when='midnight',
-        interval=1,
-        backupCount=30,
-        encoding='utf-8'
-    )
-    file_handler.setFormatter(log_format)
-    file_handler.setLevel(logging.INFO)
-    
-    # 配置控制台处理器
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(log_format)
-    console_handler.setLevel(logging.DEBUG)
-    
-    # 配置Flask应用日志
-    app.logger.setLevel(logging.DEBUG)
-    app.logger.addHandler(file_handler)
-    app.logger.addHandler(console_handler)
-    
-    # 配置Werkzeug日志（Flask内置服务器日志）
-    werkzeug_logger = logging.getLogger('werkzeug')
-    werkzeug_logger.setLevel(logging.INFO)
-    werkzeug_logger.addHandler(file_handler)
-    
-    # 记录应用启动
-    app.logger.info("SoundTech应用启动，日志系统已配置")
-
-# 初始化日志系统
-setup_logging()
-
-#############################
-# Question Helper Functions #
-#############################
-
-def fetch_question(qid):
-    """
-    根据题目 ID 从数据库中获取题目信息。
-    
-    Args:
-        qid: 题目 ID
-        
-    Returns:
-        dict: 包含题目信息的字典，如果题目不存在则返回 None
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM questions WHERE id=?', (qid,))
-    row = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    
-    if row:
-        return {
-            "id": row['id'],
-            "stem": row['stem'],
-            "answer": row['answer'],
-            "difficulty": row['difficulty'],
-            "type": row['qtype'],
-            "category": row['category'],
-            "options": json.loads(row['options'])
-        }
-    else:
-        return None
-
-def random_question_id(user_id):
-    """
-    为指定用户随机选择一个未答过的题目 ID。
-    
-    Args:
-        user_id: 用户 ID
-        
-    Returns:
-        int: 随机题目 ID，如果没有未答题目则返回 None
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT id FROM questions 
-        WHERE id NOT IN (
-            SELECT question_id FROM history WHERE user_id=?
-        )
-        ORDER BY RANDOM() 
-        LIMIT 1
-    ''', (user_id,))
-    row = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    
-    if row:
-        return row['id']
-    else:
-        return None
-
-def fetch_random_question_ids(num):
-    """
-    随机获取指定数量的题目 ID 列表。
-    
-    Args:
-        num: 需要获取的题目数量
-        
-    Returns:
-        list: 题目 ID 列表
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT id FROM questions ORDER BY RANDOM() LIMIT ?', (num,))
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return [row['id'] for row in rows]
-
-def is_favorite(user_id, question_id):
-    """
-    检查指定题目是否被用户收藏。
-    
-    Args:
-        user_id: 用户 ID
-        question_id: 题目 ID
-        
-    Returns:
-        bool: 如果题目被收藏返回 True，否则返回 False
-    """
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT 1 FROM favorites WHERE user_id=? AND question_id=?', (user_id, question_id))
-    is_fav = bool(cursor.fetchone())
-    cursor.close()
-    conn.close()
-    return is_fav
 
 #########################
 # Authentication Routes #
@@ -1444,26 +1300,54 @@ def server_error(e):
     app.logger.error(f"500错误 - 服务器内部错误: {request.url} - IP: {request.remote_addr} - 错误: {str(e)}")
     return render_template("error.html", error_code=500, error_message="服务器内部错误"), 500
 
-###########################
-# Application Entry Point #
-###########################
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=443, debug=True, ssl_context=('./static/localhost.crt', './static/localhost.key'))
+##########################
+# Application Middleware #
+##########################
 
-    # from waitress import serve
-    # serve(app, host='0.0.0.0', port=80)
-
-# 添加请求日志中间件
 @app.before_request
 def log_request_info():
     """记录每个请求的基本信息"""
-    if request.endpoint not in ['static']:  # 排除静态文件请求
+    if request.endpoint not in ['static']:
         app.logger.debug(f"请求: {request.method} {request.url} - IP: {request.remote_addr} - User-Agent: {request.headers.get('User-Agent', 'Unknown')}")
 
 @app.after_request
 def log_response_info(response):
     """记录响应信息"""
-    if request.endpoint not in ['static']:  # 排除静态文件请求
+    if request.endpoint not in ['static']:
         app.logger.debug(f"响应: {response.status_code} - {request.method} {request.url}")
     return response
+
+###########################
+# Application Entry Point #
+###########################
+
+def setup_logging():
+    """配置应用日志系统"""
+    os.makedirs('logs', exist_ok=True)
+    
+    # 设置日志格式
+    log_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    
+    # 配置文件处理器
+    file_handler = logging.handlers.TimedRotatingFileHandler(
+        'logs/soundtech.log',
+        when='midnight',
+        interval=1,
+        backupCount=100,
+        encoding='utf-8'
+    )
+    file_handler.setFormatter(log_format)
+    file_handler.setLevel(logging.INFO)
+    
+    # 配置Flask应用日志
+    app.logger.setLevel(logging.DEBUG)
+    app.logger.addHandler(file_handler)
+
+
+if __name__ == '__main__':
+    setup_logging()
+    app.run(host='0.0.0.0', port=443, ssl_context=('./static/localhost.crt', './static/localhost.key'))
+
+    # from waitress import serve
+    # serve(app, host='0.0.0.0', port=80)

@@ -102,4 +102,101 @@ def load_questions_to_db(conn: sqlite3.Connection) -> None:
     except Exception as e:
         print(f"\033[33m{e}\033[0m")
 
-init_db()
+def fetch_question(qid):
+    """
+    根据题目 ID 从数据库中获取题目信息。
+    
+    Args:
+        qid: 题目 ID
+        
+    Returns:
+        dict: 包含题目信息的字典，如果题目不存在则返回 None
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM questions WHERE id=?', (qid,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    
+    if row:
+        return {
+            "id": row['id'],
+            "stem": row['stem'],
+            "answer": row['answer'],
+            "difficulty": row['difficulty'],
+            "type": row['qtype'],
+            "category": row['category'],
+            "options": json.loads(row['options'])
+        }
+    else:
+        return None
+
+def random_question_id(user_id):
+    """
+    为指定用户随机选择一个未答过的题目 ID。
+    
+    Args:
+        user_id: 用户 ID
+        
+    Returns:
+        int: 随机题目 ID，如果没有未答题目则返回 None
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT id FROM questions 
+        WHERE id NOT IN (
+            SELECT question_id FROM history WHERE user_id=?
+        )
+        ORDER BY RANDOM() 
+        LIMIT 1
+    ''', (user_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    
+    if row:
+        return row['id']
+    else:
+        return None
+
+def fetch_random_question_ids(num):
+    """
+    随机获取指定数量的题目 ID 列表。
+    
+    Args:
+        num: 需要获取的题目数量
+        
+    Returns:
+        list: 题目 ID 列表
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id FROM questions ORDER BY RANDOM() LIMIT ?', (num,))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return [row['id'] for row in rows]
+
+def is_favorite(user_id, question_id):
+    """
+    检查指定题目是否被用户收藏。
+    
+    Args:
+        user_id: 用户 ID
+        question_id: 题目 ID
+        
+    Returns:
+        bool: 如果题目被收藏返回 True，否则返回 False
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT 1 FROM favorites WHERE user_id=? AND question_id=?', (user_id, question_id))
+    is_fav = bool(cursor.fetchone())
+    cursor.close()
+    conn.close()
+    return is_fav
+
+if __name__ != '__main__':
+    init_db()
