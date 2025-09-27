@@ -17,9 +17,18 @@
   * 在文件最后，有如下代码
 
     ```python
-    app.run(host="0.0.0.0", debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=True, port=80)
     ```
 
   * 在Windows系统中，绑定到80端口需要管理员权限 
   
-  * 
+    1. 以管理员身份运行regedit ;
+    2. 打开键值：HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\HTTP ;
+    3. 在右边找到Start这一项，将其改为0;
+    4. 重启系统，System进程不会占用80端口。
+  
+  * 仍然无法解决前序报错？？？（他人电脑仍待尝试），故改为：
+
+    ```python
+    app.run(host="0.0.0.0", debug=True, port=5000)
+    ```
