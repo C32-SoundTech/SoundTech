@@ -12,7 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from handlers.database import get_db
 from handlers.authentication import login_required, is_logged_in, get_user_id
 
-app = Flask(__name__)
+app = Flask("SoundTech-声像科技")
 
 app.secret_key = os.environ.get("SECRET_KEY", __name__)
 app.config["SESSION_COOKIE_HTTPONLY"] = True
@@ -1402,9 +1402,13 @@ def test():
     """
     return render_template("test.html")
 
-###############################
-# Application Entrytest Point #
-###############################
+###########################
+# Application Entry Point #
+###########################
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True, port=5000)
+    app.run(host='0.0.0.0', port=443, ssl_context=('./static/localhost.crt', './static/localhost.key'))
+
+    # from waitress import serve
+    # serve(app, host='0.0.0.0', port=80)
+    
