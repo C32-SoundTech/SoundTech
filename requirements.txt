@@ -1,1 +1,3 @@
 flask
+# Optional: waitress for production server
+# waitress
