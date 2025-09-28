@@ -532,6 +532,7 @@ def sequential_start():
    
     return redirect(url_for("show_sequential_question", qid=current_qid))
 
+# todo
 @app.route("/sequential/<qid>", methods=['GET', 'POST'])
 @login_required
 def show_sequential_question(qid):
@@ -671,28 +672,14 @@ def start_timed_mode():
     question_ids = fetch_random_question_ids(question_count)
     start_time = datetime.now(UTC)
     duration = duration_minutes * 60
-    
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute('''
-            INSERT INTO exam_sessions 
-            (user_id, mode, question_ids, start_time, duration) 
-            VALUES (?, ?, ?, ?, ?)
-        ''', (user_id, 'timed', json.dumps(question_ids), start_time, duration))
-        
-        exam_id = cursor.lastrowid
-        conn.commit()
+
+    success, exam_id = start_timed_mode_util(user_id, question_ids, start_time, duration)
+    if success:
         session['current_exam_id'] = exam_id
-        
         return redirect(url_for("timed_mode"))
-    except Exception as e:
-        flash(f"启动定时模式失败: {str(e)}", "error")
+    else:
+        flash("启动定时模式失败", "error")
         return redirect(url_for('index'))
-    finally:
-        cursor.close()
-        conn.close()
 
 @app.route("/timed_mode")
 @login_required
@@ -704,12 +691,7 @@ def timed_mode():
         flash("未启动定时模式", "error")
         return redirect(url_for("index"))
     
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM exam_sessions WHERE id=? AND user_id=?', (exam_id, user_id))
-    exam = cursor.fetchone()
-    cursor.close()
-    conn.close()
+    exam = timed_mode_util(exam_id, user_id)
     
     if not exam:
         flash("无法找到考试会话", "error")
@@ -804,27 +786,13 @@ def start_exam():
     start_time = datetime.now(UTC)
     duration = 0
     
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute('''
-            INSERT INTO exam_sessions 
-            (user_id, mode, question_ids, start_time, duration) 
-            VALUES (?, ?, ?, ?, ?)
-        ''', (user_id, 'exam', json.dumps(question_ids), start_time, duration))
-        
-        exam_id = cursor.lastrowid
-        conn.commit()
+    exam_id = start_exam_util(user_id, question_ids, start_time, duration)
+    if exam_id:
         session['current_exam_id'] = exam_id
-        
         return redirect(url_for("exam"))
-    except Exception as e:
-        flash(f"启动模拟考试失败: {str(e)}", "error")
+    else:
+        flash("启动模拟考试失败", "error")
         return redirect(url_for("index"))
-    finally:
-        cursor.close()
-        conn.close()
 
 @app.route("/exam")
 @login_required
@@ -842,13 +810,8 @@ def exam():
     if not exam_id:
         flash("未启动考试模式", "error")
         return redirect(url_for("index"))
-    
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM exam_sessions WHERE id=? AND user_id=?', (exam_id, user_id))
-    exam = cursor.fetchone()
-    cursor.close()
-    conn.close()
+
+    exam = exam_util(exam_id, user_id)
     
     if not exam:
         flash("无法找到考试", "error")
@@ -938,108 +901,7 @@ def submit_exam():
 @login_required
 def statistics():
     user_id = get_user_id()
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        SELECT 
-            COUNT(*) as total, 
-            SUM(correct) as correct_count 
-        FROM history 
-        WHERE user_id=?
-    ''', (user_id,))
-    
-    row = cursor.fetchone()
-    total = row['total'] if row['total'] else 0
-    correct_count = row['correct_count'] if row['correct_count'] else 0
-    overall_accuracy = (correct_count/total*100) if total>0 else 0
-    
-    cursor.execute('''
-        SELECT 
-            q.difficulty, 
-            COUNT(*) as total, 
-            SUM(h.correct) as correct_count
-        FROM history h 
-        JOIN questions q ON h.question_id=q.id
-        WHERE h.user_id=?
-        GROUP BY q.difficulty
-    ''', (user_id,))
-    
-    difficulty_stats = []
-    for row in cursor.fetchall():
-        difficulty_stats.append({
-            'difficulty': row['difficulty'] or '未分类',
-            'total': row['total'],
-            'correct_count': row['correct_count'],
-            'accuracy': (row['correct_count']/row['total']*100) if row['total']>0 else 0
-        })
-    
-    cursor.execute('''
-        SELECT 
-            q.category, 
-            COUNT(*) as total, 
-            SUM(h.correct) as correct_count
-        FROM history h 
-        JOIN questions q ON h.question_id=q.id
-        WHERE h.user_id=?
-        GROUP BY q.category
-    ''', (user_id,))
-    
-    category_stats = []
-    for row in cursor.fetchall():
-        category_stats.append({
-            'category': row['category'] or '未分类',
-            'total': row['total'],
-            'correct_count': row['correct_count'],
-            'accuracy': (row['correct_count']/row['total']*100) if row['total']>0 else 0
-        })
-    
-    cursor.execute('''
-        SELECT 
-            h.question_id, 
-            COUNT(*) as wrong_times, 
-            q.stem
-        FROM history h 
-        JOIN questions q ON h.question_id=q.id
-        WHERE h.user_id=? AND h.correct=0
-        GROUP BY h.question_id
-        ORDER BY wrong_times DESC
-        LIMIT 10
-    ''', (user_id,))
-    
-    worst_questions = []
-    for row in cursor.fetchall():
-        worst_questions.append({
-            'question_id': row['question_id'],
-            'stem': row['stem'],
-            'wrong_times': row['wrong_times']
-        })
-    
-    cursor.execute('''
-        SELECT 
-            id, 
-            mode, 
-            start_time, 
-            score, 
-            (SELECT COUNT(*) FROM JSON_EACH(question_ids)) as question_count
-        FROM exam_sessions
-        WHERE user_id=? AND completed=1
-        ORDER BY start_time DESC
-        LIMIT 5
-    ''', (user_id,))
-    
-    recent_exams = []
-    for row in cursor.fetchall():
-        recent_exams.append({
-            'id': row['id'],
-            'mode': row['mode'],
-            'start_time': row['start_time'],
-            'score': row['score'],
-            'question_count': row['question_count']
-        })
-    
-    cursor.close()
-    conn.close()
+    overall_accuracy, difficulty_stats, category_stats, worst_questions, recent_exams = statistics_util(user_id)
     
     return render_template("statistics.html", 
                           overall_accuracy=overall_accuracy,
