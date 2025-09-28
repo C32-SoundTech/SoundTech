@@ -2,9 +2,7 @@ import csv
 import json
 import sqlite3
 
-from flask import flash, render_template
-
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash
 
 
 def get_db() -> sqlite3.Connection:
@@ -325,6 +323,192 @@ def only_wrong_mode_util(user_id):
     cursor.close()
     conn.close()
     return rows
+
+def browse_questions_util(count_sql, params, page, per_page, where_clause, user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(count_sql, params)
+    total = cursor.fetchone()['total']
+    
+    offset = (page - 1) * per_page
+    query_params = params + [per_page, offset]
+    cursor.execute(f'''
+        SELECT id, stem, answer, difficulty, qtype, category, options 
+        FROM questions 
+        {where_clause}
+        ORDER BY CAST(id AS INTEGER) ASC 
+        LIMIT ? OFFSET ?
+    ''', query_params)
+    
+    rows = cursor.fetchall()
+    questions = []
+    
+    for row in rows:
+        question_data = {
+            "id": row['id'],
+            "stem": row['stem'],
+            "answer": row['answer'],
+            "difficulty": row['difficulty'],
+            "type": row['qtype'],
+            "category": row['category'],
+            "options": json.loads(row['options']) if row['options'] else {}
+        }
+        
+        cursor.execute('SELECT 1 FROM favorites WHERE user_id=? AND question_id=?', (user_id, row['id']))
+        question_data['is_favorite'] = bool(cursor.fetchone())
+        
+        questions.append(question_data)
+    
+    cursor.execute('SELECT DISTINCT qtype FROM questions WHERE qtype IS NOT NULL AND qtype != ""')
+    available_types = [row['qtype'] for row in cursor.fetchall()]
+
+    cursor.close()
+    conn.close()
+    return total, questions, available_types
+
+def filter_questions_util(selected_category = False, selected_difficulty = False):
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    cursor.execute('SELECT DISTINCT category FROM questions WHERE category IS NOT NULL AND category != ""')
+    categories = [row['category'] for row in cursor.fetchall()]
+    
+    cursor.execute('SELECT DISTINCT difficulty FROM questions WHERE difficulty IS NOT NULL AND difficulty != ""')
+    difficulties = [row['difficulty'] for row in cursor.fetchall()]
+
+    selected_category = ""
+    selected_difficulty = ""
+    results = []
+    
+    if selected_category and selected_difficulty:
+        sql = "SELECT id, stem FROM questions WHERE 1=1"
+        params = []
+        
+        if selected_category:
+            sql += " AND category=?"
+            params.append(selected_category)
+            
+        if selected_difficulty:
+            sql += " AND difficulty=?"
+            params.append(selected_difficulty)
+            
+        cursor.execute(sql, params)
+        rows = cursor.fetchall()
+        
+        for row in rows:
+            results.append({"id": row['id'], "stem": row['stem']})
+
+    cursor.close()
+    conn.close()
+    return categories, difficulties, selected_category, selected_difficulty, results
+
+def favorite_question_util(user_id, qid) -> bool:
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('INSERT OR IGNORE INTO favorites (user_id, question_id, tag) VALUES (?, ?, ?)', (user_id, qid, ''))
+        conn.commit()
+        return True
+    except Exception as e:
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+def unfavorite_question_util(user_id, qid) -> bool:
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('DELETE FROM favorites WHERE user_id=? AND question_id=?', (user_id, qid))
+        conn.commit()
+        return True
+    except Exception as e:
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+def update_tag_util(tag, user_id, qid) -> bool:
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('UPDATE favorites SET tag=? WHERE user_id=? AND question_id=?', (tag, user_id, qid))
+        conn.commit()
+        return True
+    except Exception as e:
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+def show_favorites_util(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT f.question_id, f.tag, q.stem 
+        FROM favorites f 
+        JOIN questions q ON f.question_id=q.id 
+        WHERE f.user_id=?
+    ''', (user_id,))
+    
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return rows
+
+def sequential_start_util(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT current_seq_qid FROM users WHERE id=?', (user_id,))
+    user_data = cursor.fetchone()
+    
+    if user_data and user_data['current_seq_qid']:
+        current_qid = user_data['current_seq_qid']
+        cursor.close()
+        conn.close()
+        return current_qid, ""
+    else:
+        cursor.execute('''
+            SELECT id
+            FROM questions
+            WHERE id NOT IN (
+                SELECT question_id FROM history WHERE user_id = ?
+            )
+            ORDER BY CAST(id AS INTEGER) ASC
+            LIMIT 1
+        ''', (user_id,))
+        row = cursor.fetchone()
+        flash_info = ""
+        
+        if row is None:
+            cursor.execute('''
+                SELECT id
+                FROM questions
+                ORDER BY CAST(id AS INTEGER) ASC
+                LIMIT 1
+            ''')
+            row = cursor.fetchone()
+            
+            if row is None:
+                cursor.close()
+                conn.close()
+                flash_info = "题库中没有题目！"
+                return None, flash_info
+            
+            current_qid = row['id']
+            flash_info = "所有题目已完成，从第一题重新开始。"
+        else:
+            current_qid = row['id']
+        
+        cursor.execute('UPDATE users SET current_seq_qid = ? WHERE id = ?', (current_qid, user_id))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return current_qid, flash_info
 
 if __name__ != '__main__':
     init_db()
