@@ -11,7 +11,7 @@ from flask import flash, jsonify, url_for, redirect, render_template
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from handlers.database import get_db, fetch_question, random_question_id, fetch_random_question_ids, is_favorite
+from handlers.database import *
 from handlers.authentication import login_required, is_logged_in, get_user_id
 
 app = Flask("SoundTech-声像科技")
@@ -50,21 +50,9 @@ def register():
             flash("密码长度不能少于6个字符", "error")
             return render_template("register.html")
         
-        conn = get_db()
-        cursor = conn.cursor()
-        
-        cursor.execute('SELECT id FROM users WHERE username=?', (username,))
-        if cursor.fetchone():
-            cursor.close()
-            conn.close()
+        if not register_util(username, password):
             flash("用户名已存在，请更换用户名", "error")
             return render_template("register.html")
-        
-        password_hash = generate_password_hash(password)
-        cursor.execute('INSERT INTO users (username, password_hash) VALUES (?, ?)', (username, password_hash))
-        conn.commit()
-        cursor.close()
-        conn.close()
         
         flash("注册成功，请登录", "success")
         return redirect(url_for("login"))
@@ -91,12 +79,7 @@ def login():
             flash("用户名和密码不能为空", "error")
             return render_template("login.html")
         
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('SELECT id, password_hash FROM users WHERE username=?', (username,))
-        user = cursor.fetchone()
-        cursor.close()
-        conn.close()
+        user = login_util(username)
         
         if user and check_password_hash(user['password_hash'], password):
             session['user_id'] = user['id']
