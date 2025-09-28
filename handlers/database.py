@@ -510,5 +510,180 @@ def sequential_start_util(user_id):
         conn.close()
         return current_qid, flash_info
 
+# todo
+def show_sequential_question_util():
+    pass
+
+def start_timed_mode_util(user_id, question_ids, start_time, duration) -> bool:
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('''
+            INSERT INTO exam_sessions 
+            (user_id, mode, question_ids, start_time, duration) 
+            VALUES (?, ?, ?, ?, ?)
+        ''', (user_id, 'timed', json.dumps(question_ids), start_time, duration))
+        
+        exam_id = cursor.lastrowid
+        conn.commit()
+        return True, exam_id
+    except Exception as e:
+        return False, None
+    finally:
+        cursor.close()
+        conn.close()
+
+def timed_mode_util(exam_id, user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM exam_sessions WHERE id=? AND user_id=?', (exam_id, user_id))
+    exam = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return exam
+
+# todo
+def submit_timed_mode_util(exam_id, user_id, answers):
+    pass
+
+def start_exam_util(user_id, question_ids, start_time, duration) -> bool:
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('''
+            INSERT INTO exam_sessions 
+            (user_id, mode, question_ids, start_time, duration) 
+            VALUES (?, ?, ?, ?, ?)
+        ''', (user_id, 'exam', json.dumps(question_ids), start_time, duration))
+        
+        exam_id = cursor.lastrowid
+        conn.commit()
+        return exam_id
+    except Exception as e:
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+def exam_util(exam_id, user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM exam_sessions WHERE id=? AND user_id=?', (exam_id, user_id))
+    exam = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return exam
+
+# todo
+def submit_exam_util():
+    pass
+
+def statistics_util(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+        SELECT 
+            COUNT(*) as total, 
+            SUM(correct) as correct_count 
+        FROM history 
+        WHERE user_id=?
+    ''', (user_id,))
+    
+    row = cursor.fetchone()
+    total = row['total'] if row['total'] else 0
+    correct_count = row['correct_count'] if row['correct_count'] else 0
+    overall_accuracy = (correct_count/total*100) if total>0 else 0
+    
+    cursor.execute('''
+        SELECT 
+            q.difficulty, 
+            COUNT(*) as total, 
+            SUM(h.correct) as correct_count
+        FROM history h 
+        JOIN questions q ON h.question_id=q.id
+        WHERE h.user_id=?
+        GROUP BY q.difficulty
+    ''', (user_id,))
+    
+    difficulty_stats = []
+    for row in cursor.fetchall():
+        difficulty_stats.append({
+            'difficulty': row['difficulty'] or '未分类',
+            'total': row['total'],
+            'correct_count': row['correct_count'],
+            'accuracy': (row['correct_count']/row['total']*100) if row['total']>0 else 0
+        })
+    
+    cursor.execute('''
+        SELECT 
+            q.category, 
+            COUNT(*) as total, 
+            SUM(h.correct) as correct_count
+        FROM history h 
+        JOIN questions q ON h.question_id=q.id
+        WHERE h.user_id=?
+        GROUP BY q.category
+    ''', (user_id,))
+    
+    category_stats = []
+    for row in cursor.fetchall():
+        category_stats.append({
+            'category': row['category'] or '未分类',
+            'total': row['total'],
+            'correct_count': row['correct_count'],
+            'accuracy': (row['correct_count']/row['total']*100) if row['total']>0 else 0
+        })
+    
+    cursor.execute('''
+        SELECT 
+            h.question_id, 
+            COUNT(*) as wrong_times, 
+            q.stem
+        FROM history h 
+        JOIN questions q ON h.question_id=q.id
+        WHERE h.user_id=? AND h.correct=0
+        GROUP BY h.question_id
+        ORDER BY wrong_times DESC
+        LIMIT 10
+    ''', (user_id,))
+    
+    worst_questions = []
+    for row in cursor.fetchall():
+        worst_questions.append({
+            'question_id': row['question_id'],
+            'stem': row['stem'],
+            'wrong_times': row['wrong_times']
+        })
+    
+    cursor.execute('''
+        SELECT 
+            id, 
+            mode, 
+            start_time, 
+            score, 
+            (SELECT COUNT(*) FROM JSON_EACH(question_ids)) as question_count
+        FROM exam_sessions
+        WHERE user_id=? AND completed=1
+        ORDER BY start_time DESC
+        LIMIT 5
+    ''', (user_id,))
+    
+    recent_exams = []
+    for row in cursor.fetchall():
+        recent_exams.append({
+            'id': row['id'],
+            'mode': row['mode'],
+            'start_time': row['start_time'],
+            'score': row['score'],
+            'question_count': row['question_count']
+        })
+    
+    cursor.close()
+    conn.close()
+    return overall_accuracy, difficulty_stats, category_stats, worst_questions, recent_exams
+
 if __name__ != '__main__':
     init_db()
