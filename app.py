@@ -128,13 +128,7 @@ def index():
         Response: 渲染的主页模板
     """
     user_id = get_user_id()
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT current_seq_qid FROM users WHERE id = ?', (user_id,))
-    user_data = cursor.fetchone()
-    current_seq_qid = user_data['current_seq_qid'] if user_data and user_data['current_seq_qid'] else None
-    cursor.close()
-    conn.close()
+    current_seq_qid = index_util(user_id)
     
     return render_template("index.html", current_year=datetime.now(UTC).year, current_seq_qid=current_seq_qid)
 
@@ -151,13 +145,7 @@ def reset_history():
     user_id = get_user_id()
     
     try:
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('DELETE FROM history WHERE user_id=?', (user_id,))
-        cursor.execute('UPDATE users SET current_seq_qid = NULL WHERE id = ?', (user_id,))
-        conn.commit()
-        cursor.close()
-        conn.close()
+        reset_history_util(user_id)
         flash("答题历史已重置。现在您可以重新开始答题。", "success")
     except Exception as e:
         flash(f"重置历史时出错: {str(e)}", "error")
@@ -180,15 +168,8 @@ def random_question():
     """
     user_id = get_user_id()
     qid = random_question_id(user_id)
-    
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT COUNT(*) as total FROM questions')
-    total = cursor.fetchone()['total']
-    cursor.execute('SELECT COUNT(DISTINCT question_id) as answered FROM history WHERE user_id=?', (user_id,))
-    answered = cursor.fetchone()['answered']
-    cursor.close()
-    conn.close()
+
+    answered, total = random_question_util(user_id)
     
     if not qid:
         flash("您已完成所有题目！可以重置历史以重新开始。", "info")
@@ -223,25 +204,12 @@ def show_question(qid):
         flash("题目不存在", "error")
         return redirect(url_for("index"))
 
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('UPDATE users SET current_seq_qid = ? WHERE id = ?', (qid, user_id))
-    conn.commit()
-
     if request.method == 'POST':
         user_answer = request.form.getlist('answer')
         user_answer_str = "".join(sorted(user_answer))
         correct = int(user_answer_str == "".join(sorted(question['answer'])))
 
-        cursor.execute('INSERT INTO history (user_id, question_id, user_answer, correct) VALUES (?, ?, ?, ?)', (user_id, qid, user_answer_str, correct))
-        conn.commit()
-
-        cursor.execute('SELECT COUNT(*) AS total FROM questions')
-        total = cursor.fetchone()['total']
-        cursor.execute('SELECT COUNT(DISTINCT question_id) AS answered FROM history WHERE user_id=?', (user_id,))
-        answered = cursor.fetchone()['answered']
-        cursor.close()
-        conn.close()
+        answered, total = show_question_util_post(qid, user_id, user_answer_str, correct)
 
         result_msg = "回答正确" if correct else f"回答错误，正确答案：{question['answer']}"
         flash(result_msg, "success" if correct else "error")
@@ -254,13 +222,7 @@ def show_question(qid):
                               total=total,
                               is_favorite=is_fav)
 
-    cursor.execute('SELECT COUNT(*) AS total FROM questions')
-    total = cursor.fetchone()['total']
-    cursor.execute('SELECT COUNT(DISTINCT question_id) AS answered FROM history WHERE user_id=?', (user_id,))
-    answered = cursor.fetchone()['answered']
-    cursor.close()
-    conn.close()
-    
+    answered, total = show_question_util_get(qid, user_id)
     is_fav = is_favorite(user_id, qid)
 
     return render_template("question.html",

@@ -228,5 +228,67 @@ def login_util(username):
     conn.close()
     return user
 
+def index_util(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT current_seq_qid FROM users WHERE id = ?', (user_id,))
+    user_data = cursor.fetchone()
+    current_seq_qid = user_data['current_seq_qid'] if user_data and user_data['current_seq_qid'] else None
+    cursor.close()
+    conn.close()
+    return current_seq_qid
+
+def reset_history_util(user_id):
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM history WHERE user_id=?', (user_id,))
+        cursor.execute('UPDATE users SET current_seq_qid = NULL WHERE id = ?', (user_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        raise e
+
+def random_question_util(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) as total FROM questions')
+    total = cursor.fetchone()['total']
+    cursor.execute('SELECT COUNT(DISTINCT question_id) as answered FROM history WHERE user_id=?', (user_id,))
+    answered = cursor.fetchone()['answered']
+    cursor.close()
+    conn.close()
+    return answered, total
+
+def show_question_util_get(qid, user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('UPDATE users SET current_seq_qid = ? WHERE id = ?', (qid, user_id))
+    conn.commit()
+    cursor.execute('SELECT COUNT(*) AS total FROM questions')
+    total = cursor.fetchone()['total']
+    cursor.execute('SELECT COUNT(DISTINCT question_id) AS answered FROM history WHERE user_id=?', (user_id,))
+    answered = cursor.fetchone()['answered']
+    cursor.close()
+    conn.close()
+    return answered, total
+
+def show_question_util_post(qid, user_id, user_answer_str, correct):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('UPDATE users SET current_seq_qid = ? WHERE id = ?', (qid, user_id))
+    conn.commit()
+    cursor.execute('INSERT INTO history (user_id, question_id, user_answer, correct) VALUES (?, ?, ?, ?)', (user_id, qid, user_answer_str, correct))
+    conn.commit()
+
+    cursor.execute('SELECT COUNT(*) AS total FROM questions')
+    total = cursor.fetchone()['total']
+    cursor.execute('SELECT COUNT(DISTINCT question_id) AS answered FROM history WHERE user_id=?', (user_id,))
+    answered = cursor.fetchone()['answered']
+    cursor.close()
+    conn.close()
+    return answered, total
+
 if __name__ != '__main__':
     init_db()
