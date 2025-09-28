@@ -2,6 +2,10 @@ import csv
 import json
 import sqlite3
 
+from flask import flash, render_template
+
+from werkzeug.security import check_password_hash, generate_password_hash
+
 
 def get_db() -> sqlite3.Connection:
     conn = sqlite3.connect("./static/database.db")
@@ -197,6 +201,32 @@ def is_favorite(user_id, question_id):
     cursor.close()
     conn.close()
     return is_fav
+
+def register_util(username, password) -> bool:
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    cursor.execute('SELECT id FROM users WHERE username=?', (username,))
+    if cursor.fetchone():
+        cursor.close()
+        conn.close()
+        return False
+    
+    password_hash = generate_password_hash(password)
+    cursor.execute('INSERT INTO users (username, password_hash) VALUES (?, ?)', (username, password_hash))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True
+
+def login_util(username):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, password_hash FROM users WHERE username=?', (username,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user
 
 if __name__ != '__main__':
     init_db()
