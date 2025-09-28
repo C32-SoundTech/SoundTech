@@ -242,12 +242,7 @@ def show_history():
         Response: 渲染的历史页面
     """
     user_id = get_user_id()
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM history WHERE user_id=? ORDER BY timestamp DESC', (user_id,))
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    rows = show_history_util(user_id)
     
     history_data = []
     for row in rows:
@@ -278,12 +273,7 @@ def search():
     results = []
     
     if query:
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM questions WHERE stem LIKE ?', ('%'+query+'%',))
-        rows = cursor.fetchall()
-        cursor.close()
-        conn.close()
+        rows = search_util(query)
         
         for row in rows:
             question = {
@@ -305,12 +295,7 @@ def wrong_questions():
         Response: 渲染的错题页面
     """
     user_id = get_user_id()
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT question_id FROM history WHERE user_id=? AND correct=0', (user_id,))
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    rows = wrong_questions_util(user_id)
     
     wrong_ids = set(row['question_id'] for row in rows)
     questions_list = []
@@ -333,12 +318,7 @@ def only_wrong_mode():
         Response: 渲染的题目页面或重定向到主页
     """
     user_id = get_user_id()
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT question_id FROM history WHERE user_id=? AND correct=0', (user_id,))
-    rows = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    rows = only_wrong_mode_util(user_id)
     
     wrong_ids = [row['question_id'] for row in rows]
     
@@ -372,9 +352,6 @@ def browse_questions():
     search_query = request.args.get('search', '')
     per_page = 20
     
-    conn = get_db()
-    cursor = conn.cursor()
-    
     where_conditions = []
     params = []
     
@@ -389,10 +366,12 @@ def browse_questions():
     where_clause = ' WHERE ' + ' AND '.join(where_conditions) if where_conditions else ''
     
     count_sql = f'SELECT COUNT(*) as total FROM questions{where_clause}'
+        
+    conn = get_db()
+    cursor = conn.cursor()
     cursor.execute(count_sql, params)
     total = cursor.fetchone()['total']
     
-    # Get questions with pagination and filters
     offset = (page - 1) * per_page
     query_params = params + [per_page, offset]
     cursor.execute(f'''

@@ -290,5 +290,41 @@ def show_question_util_post(qid, user_id, user_answer_str, correct):
     conn.close()
     return answered, total
 
+def show_history_util(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM history WHERE user_id=? ORDER BY timestamp DESC', (user_id,))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return rows
+
+def search_util(query):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM questions WHERE stem LIKE ?', ('%'+query+'%',))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return rows
+
+def wrong_questions_util(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT question_id FROM history WHERE user_id=? AND correct=0', (user_id,))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return rows
+
+def only_wrong_mode_util(user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT question_id FROM history WHERE user_id=? AND correct=0', (user_id,))
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return rows
+
 if __name__ != '__main__':
     init_db()
