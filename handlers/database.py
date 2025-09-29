@@ -510,9 +510,23 @@ def sequential_start_util(user_id):
         conn.close()
         return current_qid, flash_info
 
-# todo
-def show_sequential_question_util():
-    pass
+def show_sequential_question_util(qid, user_id):
+    conn = get_db()
+    cursor = conn.cursor()
+    
+    cursor.execute("UPDATE users SET current_seq_qid = ? WHERE id = ?", (qid, user_id))
+    conn.commit()
+    
+    cursor.execute('SELECT COUNT(*) AS total FROM questions')
+    total = cursor.fetchone()['total']
+    
+    cursor.execute('SELECT COUNT(DISTINCT question_id) AS answered FROM history WHERE user_id = ?', (user_id,))
+    answered = cursor.fetchone()['answered']
+    
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return answered, total 
 
 def start_timed_mode_util(user_id, question_ids, start_time, duration) -> bool:
     conn = get_db()
@@ -543,9 +557,16 @@ def timed_mode_util(exam_id, user_id):
     conn.close()
     return exam
 
-# todo
-def submit_timed_mode_util(exam_id, user_id, answers):
-    pass
+def exam_exist_util(exam_id, user_id) -> bool:
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM exam_sessions WHERE id=? AND user_id=?', (exam_id, user_id))
+    exam = cursor.fetchone()
+    exam_exist = exam is not None
+    cursor.close()
+    conn.close()
+    return exam_exist
+
 
 def start_exam_util(user_id, question_ids, start_time, duration) -> bool:
     conn = get_db()
