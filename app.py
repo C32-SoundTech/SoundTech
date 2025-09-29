@@ -532,7 +532,6 @@ def sequential_start():
    
     return redirect(url_for("show_sequential_question", qid=current_qid))
 
-# todo
 @app.route("/sequential/<qid>", methods=['GET', 'POST'])
 @login_required
 def show_sequential_question(qid):
@@ -557,19 +556,16 @@ def show_sequential_question(qid):
     result_msg = None
     user_answer_str = ""
     
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    cursor.execute("UPDATE users SET current_seq_qid = ? WHERE id = ?", (qid, user_id))
-    conn.commit()
-    
     if request.method == 'POST':
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET current_seq_qid = ? WHERE id = ?", (qid, user_id))
+        conn.commit()
+
         user_answer = request.form.getlist('answer')
         user_answer_str = "".join(sorted(user_answer))
         correct = int(user_answer_str == "".join(sorted(question['answer'])))
-        
         cursor.execute('INSERT INTO history (user_id, question_id, user_answer, correct) VALUES (?, ?, ?, ?)', (user_id, qid, user_answer_str, correct))
-        
         cursor.execute('''
             SELECT id FROM questions
             WHERE CAST(id AS INTEGER) > ?
@@ -579,7 +575,6 @@ def show_sequential_question(qid):
             ORDER BY CAST(id AS INTEGER) ASC
             LIMIT 1
         ''', (int(qid), user_id))
-        
         row = cursor.fetchone()
         if row:
             next_qid = row['id']
@@ -616,15 +611,17 @@ def show_sequential_question(qid):
         result_msg = "回答正确！" if correct else f"回答错误，正确答案：{question['answer']}"
         flash(result_msg, "success" if correct else "error")
     
-    cursor.execute('SELECT COUNT(*) AS total FROM questions')
-    total = cursor.fetchone()['total']
-    
-    cursor.execute('SELECT COUNT(DISTINCT question_id) AS answered FROM history WHERE user_id = ?', (user_id,))
-    answered = cursor.fetchone()['answered']
-    
-    conn.commit()
-    cursor.close()
-    conn.close()
+        cursor.execute('SELECT COUNT(*) AS total FROM questions')
+        total = cursor.fetchone()['total']
+        
+        cursor.execute('SELECT COUNT(DISTINCT question_id) AS answered FROM history WHERE user_id = ?', (user_id,))
+        answered = cursor.fetchone()['answered']
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+    else:
+        answered, total = show_sequential_question_util(qid, user_id)
     
     is_fav = is_favorite(user_id, qid)
     
@@ -724,18 +721,17 @@ def submit_timed_mode():
     if not exam_id:
         flash("没有正在进行的定时模式", "error")
         return redirect(url_for("index"))
-    
+
+    if not exam_exist_util(exam_id, user_id):
+        flash("无法找到考试会话", "error")
+        return redirect(url_for("index"))
+
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM exam_sessions WHERE id=? AND user_id=?', (exam_id, user_id))
     exam = cursor.fetchone()
-    
-    if not exam:
-        cursor.close()
-        conn.close()
-        flash("无法找到考试会话", "error")
-        return redirect(url_for("index"))
-    
+    cursor.close()
+    conn.close()
     question_ids = json.loads(exam['question_ids'])
     
     correct_count = 0
