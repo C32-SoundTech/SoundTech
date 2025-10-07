@@ -1,7 +1,7 @@
-* wswCR7 吴沈炜
-* 2034563169@qq.com
+* SoundTech团队
+* soundtech@example.com
 
-#### 2025.10.1
+#### 2025.10.7
 
 > 路由函数中的参数错误
 
