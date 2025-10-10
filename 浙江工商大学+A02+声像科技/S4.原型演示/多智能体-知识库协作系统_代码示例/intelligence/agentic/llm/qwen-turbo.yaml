@@ -1,0 +1,9 @@
+name: 'qwen-turbo'
+description: 'qwen-turbo'
+model_name: 'qwen-turbo'
+max_tokens: 16384
+api_key: 'api_key'
+metadata:
+  type: 'LLM'
+  module: 'agentuniverse.llm.default.qwen_openai_style_llm'
+  class: 'QWenOpenAIStyleLLM'
