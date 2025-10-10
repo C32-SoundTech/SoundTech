@@ -1,0 +1,17 @@
+info:
+  name: '小金'
+  description: '小金'
+profile:
+  prompt_version: 小金.cn
+  llm_model:
+    name: 'qwen-turbo'
+    temperature: 0.25
+action:
+  tool:
+    - 'quark_search_tool'
+    - 'calculator_tool'
+    - 'python_runner'
+metadata:
+  type: 'AGENT'
+  module: 'intelligence.agentic.agent.participant_agent'
+  class: 'ParticipantAgent'

@@ -1,0 +1,19 @@
+info:
+  name: 'group_agent'
+  description: 'group_agent'
+profile:
+  prompt_version: group_agent.cn
+  llm_model:
+    name: 'qwen-turbo'
+    temperature: 0.5
+  total_round: 2
+  participant_names:
+    - '小丁'
+    - '小金'
+    - '小王'
+    - '小张'
+    - '小沈'
+metadata:
+  type: 'AGENT'
+  module: 'intelligence.agentic.agent.group_template'
+  class: 'DiscussionGroupTemplate'

@@ -1,0 +1,11 @@
+[KEY_LIST]
+#  ========================================================================
+#  The following section is used for key configuration of models.
+#  ========================================================================
+DASHSCOPE_API_KEY='DASHSCOPE_API_KEY'
+DASHSCOPE_API_BASE='https://dashscope.aliyuncs.com/compatible-mode/v1'
+
+#  ========================================================================
+#  The following section is used for key configuration of search tools.
+#  ========================================================================
+SERPER_API_KEY='SERPER_API_KEY'
