@@ -1,0 +1,13 @@
+name: 'calculator_tool'
+description: |
+  该工具可以用来计算输入的文本表达式并给出答案，可以用中文或者数字。
+  工具输入示例：
+    示例1: 你想要计算10/5时，工具的输入应该是：10/5
+    示例2: 你想要计算十乘三时，工具的输入应该是：十乘三
+    示例3: 你想要计算10加20时，工具的输入应该是：10加20
+tool_type: 'api'
+input_keys: ['input']
+metadata:
+  type: 'TOOL'
+  module: 'intelligence.agentic.tool.calculator_tool'
+  class: 'CalculatorTool'
