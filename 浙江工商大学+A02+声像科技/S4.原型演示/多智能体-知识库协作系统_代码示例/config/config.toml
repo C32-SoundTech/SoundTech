@@ -1,0 +1,14 @@
+[BASE_INFO]
+appname = 'dingdust_agent'
+
+[CORE_PACKAGE]
+default = ['intelligence.agentic']
+agent = ['intelligence.agentic.agent']
+llm = ['intelligence.agentic.llm']
+prompt = ['intelligence.agentic.prompt']
+tool = ['intelligence.agentic.tool']
+
+
+[SUB_CONFIG_PATH]
+log_config_path = './log_config.toml'
+custom_key_path = './custom_key.toml'
