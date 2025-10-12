@@ -1,0 +1,1092 @@
+{% extends 'base_auth.html' %}
+
+{% block title %}登录 - SoundTech{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-logo">
+        <i class="fas fa-book-open" style="font-size: 3rem; color: var(--primary-color);"></i>
+    </div>
+    <h1 class="auth-title">登录&nbsp;<article style="display: inline;">SoundTech</article></h1>
+    
+    <form method="post" class="auth-form">
+        <div class="form-group">
+            <label for="username" class="form-label">用户名</label>
+            <div class="input-group">
+                <span class="input-icon"><i class="fas fa-user"></i></span>
+                <input type="text" id="username" name="username" class="form-control" required autocomplete="username" placeholder="请输入用户名">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="password" class="form-label">密码</label>
+            <div class="input-group">
+                <span class="input-icon"><i class="fas fa-lock"></i></span>
+                <input type="password" id="password" name="password" class="form-control" required autocomplete="current-password" placeholder="请输入密码">
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">
+            <i class="fas fa-sign-in-alt"></i> 登录
+        </button>
+    </form>
+    
+    <div class="auth-footer">
+        <p>还没有账号？ <a href="{{ url_for('register') }}">立即注册</a></p>
+    </div>
+</div>
+<div class="scene">
+  <div class="helicopter__tilter">
+    <div class="helicopter__wrapper">
+      <div class="helicopter">
+        <div class="helicopter__rotor">
+          <div class="cuboid cuboid--rotor">
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+          </div>
+        </div>
+        <div class="helicopter__cockpit">
+          <div class="cuboid cuboid--cockpit">
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+          </div>
+          <div class="helicopter__base-light">
+            <div class="cuboid cuboid--base-light cuboid--light">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+          <div class="helicopter__chair">
+            <div class="helicopter__chair-back">
+              <div class="cuboid cuboid--chair">
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+              </div>
+            </div>
+            <div class="helicopter__chair-bottom">
+              <div class="cuboid cuboid--chair">
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+                <div class="cuboid__side"></div>
+              </div>
+            </div>
+          </div>
+          <div class="helicopter__dashboard">
+            <div class="cuboid cuboid--dashboard">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+        </div>
+        <div class="helicopter__tail">
+          <div class="cuboid cuboid--tail">
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+          </div>
+        </div>
+        <div class="helicopter__fin">
+          <div class="cuboid cuboid--fin">
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+          </div>
+          <div class="helicopter__triblade"></div>
+          <div class="helicopter__tail-light">
+            <div class="cuboid cuboid--tail-light cuboid--light">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+        </div>
+        <div class="helicopter__stabilizer">
+          <div class="cuboid cuboid--stabilizer">
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+          </div>
+        </div>
+        <div class="helicopter__skids">
+          <div class="helicopter__skid--left helicopter__skid">
+            <div class="cuboid cuboid--skid">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+          <div class="helicopter__skid--right helicopter__skid">
+            <div class="cuboid cuboid--skid">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+        </div>
+        <div class="helicopter__wing">
+          <div class="cuboid cuboid--wing">
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+            <div class="cuboid__side"></div>
+          </div>
+          <div class="helicopter__wing-light helicopter__wing-light--left">
+            <div class="cuboid cuboid--wing-light cuboid--light">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+          <div class="helicopter__wing-light helicopter__wing-light--right">
+            <div class="cuboid cuboid--wing-light cuboid--light">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+        </div>
+        <div class="helicopter__launchers">
+          <div class="helicopter__launcher helicopter__launcher--left">
+            <div class="cuboid cuboid--launcher">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+          <div class="helicopter__launcher helicopter__launcher--right">
+            <div class="cuboid cuboid--launcher">
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+              <div class="cuboid__side"></div>
+            </div>
+          </div>
+        </div>
+        <div class="helicopter__blades"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+    .input-group {
+        position: relative;
+    }
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-500);
+        z-index: 1;
+    }
+    .form-control {
+        padding-left: 2.5rem;
+    }
+    .auth-container {
+        animation: fadeIn 0.5s ease;
+        margin-bottom: 10.3%;
+        margin-left: 64%;
+    }
+    .cuboid {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .cuboid__side:nth-of-type(1) {
+      height: calc(var(--thickness) * 1vmin);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      transform: translate(0, -50%) rotateX(90deg);
+    }
+    .cuboid__side:nth-of-type(2) {
+      height: 100%;
+      width: calc(var(--thickness) * 1vmin);
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translate(50%, -50%) rotateY(90deg);
+    }
+    .cuboid__side:nth-of-type(3) {
+      width: 100%;
+      height: calc(var(--thickness) * 1vmin);
+      position: absolute;
+      bottom: 0;
+      transform: translate(0%, 50%) rotateX(90deg);
+    }
+    .cuboid__side:nth-of-type(4) {
+      height: 100%;
+      width: calc(var(--thickness) * 1vmin);
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translate(-50%, -50%) rotateY(90deg);
+    }
+    .cuboid__side:nth-of-type(5) {
+      height: 100%;
+      width: 100%;
+      transform: translate3d(0, 0, calc(var(--thickness) * 0.5vmin));
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .cuboid__side:nth-of-type(6) {
+      height: 100%;
+      width: 100%;
+      transform: translate3d(0, 0, calc(var(--thickness) * -0.5vmin)) rotateY(
+          180deg
+        );
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    *,
+    *:after,
+    *:before {
+      box-sizing: border-box;
+      transform-style: preserve-3d;
+    }
+    :root {
+      --base-size: 20;
+      --helicopter-height: calc(var(--base-size) * 1vmin);
+      --helicopter-width: calc(var(--helicopter-height) * 2);
+      --helicopter-one: hsl(0, 0%, 95%);
+      --helicopter-two: hsl(0, 0%, 90%);
+      --helicopter-three: hsl(0, 0%, 85%);
+      --helicopter-four: hsl(0, 0%, 75%);
+      --chair-one: hsl(0, 0%, 35%);
+      --chair-two: hsl(0, 0%, 30%);
+      --chair-three: hsl(0, 0%, 25%);
+      --chair-four: hsl(0, 0%, 20%);
+      --dash-one: hsl(0, 0%, 65%);
+      --dash-two: hsl(0, 0%, 60%);
+      --dash-three: hsl(0, 0%, 55%);
+      --dash-four: hsl(0, 0%, 50%);
+      --accent-one: hsl(10, 60%, 65%);
+      --accent-two: hsl(10, 60%, 60%);
+      --accent-three: hsl(10, 60%, 55%);
+      --accent-four: hsl(10, 60%, 50%);
+      --rocket-one: hsl(1, 60%, 45%);
+      --rocket-two: hsl(1, 60%, 40%);
+      --rocket-three: hsl(1, 60%, 35%);
+      --rocket-four: hsl(1, 60%, 30%);
+      --screen-one: hsla(210, 80%, 50%, 0.45);
+      --screen-two: hsla(210, 80%, 50%, 0.4);
+      --screen-three: hsla(210, 80%, 50%, 0.35);
+      --screen-four: hsla(210, 80%, 50%, 0.35);
+    }
+    body {
+      display: grid;
+      overflow: hidden;
+      touch-action: none;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .scene {
+      position: fixed;
+      top: 65%;
+      left: 30%;
+      transform: translate3d(-50%, -50%, 100vmin);
+      transform: translate3d(-50%, -50%, 100vmin) rotateX(-24deg) rotateY(
+          44deg
+        ) rotateX(calc(var(--rotate-x, 0) * 1deg)) rotateY(calc(var(
+                --rotate-y,
+                0
+              ) * 1deg));
+    }
+    .helicopter {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-20%, -50%);
+    }
+    .helicopter__wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      -webkit-animation: float 1s infinite linear;
+      animation: float 1s infinite linear;
+      height: var(--helicopter-height);
+      width: var(--helicopter-width);
+    }
+    @-webkit-keyframes float {
+      50% {
+        transform: translate(-50%, -65%);
+      }
+    }
+    @keyframes float {
+      50% {
+        transform: translate(-50%, -65%);
+      }
+    }
+    .helicopter__base-light {
+      --hue: 20;
+      bottom: -6%;
+      width: 6%;
+      height: 6%;
+      left: 47%;
+      position: absolute;
+    }
+    .helicopter__tail-light {
+      --hue: 15;
+      top: -20%;
+      width: 20%;
+      height: 20%;
+      position: absolute;
+      left: 65%;
+    }
+    .helicopter__wing-light {
+      --hue: 90;
+      --speed: 0.4;
+      top: -50%;
+      width: 10%;
+      height: 50%;
+      position: absolute;
+      left: 45%;
+    }
+    .helicopter__wing-light--left {
+      transform: translate3d(0, 0, calc(var(--base-size) * 0.5vmin));
+    }
+    .helicopter__wing-light--right {
+      transform: translate3d(0, 0, calc(var(--base-size) * -0.5vmin));
+    }
+    .helicopter > * {
+      position: absolute;
+    }
+    .helicopter__rotor {
+      top: 0;
+      left: 30%;
+      height: 14%;
+      width: 8%;
+    }
+    .helicopter__cockpit {
+      left: 0;
+      top: 14%;
+      width: 54%;
+      height: 70%;
+    }
+    .helicopter__tail {
+      top: 30%;
+      height: 20%;
+      width: 46%;
+      left: 54%;
+    }
+    .helicopter__fin {
+      right: 2%;
+      top: 10%;
+      height: 20%;
+      width: 10%;
+    }
+    .helicopter__stabilizer {
+      right: 2%;
+      top: 30%;
+      height: 10%;
+      width: 10%;
+    }
+    .helicopter__skids {
+      bottom: 0;
+      left: 0;
+      height: 6%;
+      width: 70%;
+    }
+    .helicopter__wing {
+      height: 6%;
+      width: 22%;
+      left: 28%;
+      top: 60%;
+    }
+    .helicopter__launchers {
+      height: 10%;
+      width: 18%;
+      left: 30%;
+      top: 66%;
+    }
+    .helicopter__chair {
+      position: absolute;
+      left: 18%;
+      top: 30%;
+      width: 28%;
+      height: 58%;
+    }
+    .helicopter__chair-back {
+      position: absolute;
+      width: 25%;
+      right: 0;
+      top: 0;
+      height: 100%;
+    }
+    .helicopter__chair-bottom {
+      position: absolute;
+      height: 20%;
+      right: 0;
+      bottom: 0;
+      width: 80%;
+    }
+    .helicopter__launcher {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+    }
+    .helicopter__launcher--left {
+      transform: translate3d(0, 0, calc(var(--base-size) * -0.425vmin));
+    }
+    .helicopter__launcher--right {
+      transform: translate3d(0, 0, calc(var(--base-size) * 0.425vmin));
+    }
+    .helicopter__triblade {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 50%;
+      top: 50%;
+      transform: translate3d(-25%, -75%, calc(var(--base-size) * 0.07vmin)) scale(
+          1.25
+        );
+      border-radius: 50%;
+      overflow: hidden;
+      -webkit-animation: rotate-tri 0.2s infinite linear;
+      animation: rotate-tri 0.2s infinite linear;
+    }
+    .helicopter__triblade:after,
+    .helicopter__triblade:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 100%;
+      width: 15%;
+      background: var(--chair-four);
+      transform: translate(-50%, -50%);
+    }
+    .helicopter__triblade:after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+    @-webkit-keyframes rotate-tri {
+      to {
+        transform: translate3d(-25%, -75%, calc(var(--base-size) * 0.07vmin)) scale(
+            1.25
+          )
+          rotate(-360deg);
+      }
+    }
+    @keyframes rotate-tri {
+      to {
+        transform: translate3d(-25%, -75%, calc(var(--base-size) * 0.07vmin)) scale(
+            1.25
+          )
+          rotate(-360deg);
+      }
+    }
+    .helicopter__blades {
+      height: calc(var(--helicopter-height) * 2);
+      width: calc(var(--helicopter-height) * 2);
+      left: 34%;
+      top: 0%;
+      transform: translate(-50%, -50%) rotateX(90deg) translate3d(0, 0, 1px);
+      border-radius: 50%;
+      overflow: hidden;
+      -webkit-animation: blades infinite 0.1s linear;
+      animation: blades infinite 0.1s linear;
+    }
+    .helicopter__blades:after,
+    .helicopter__blades:before {
+      content: '';
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(
+        var(--chair-one) 0 5%,
+        var(--accent-one) 5% 10%,
+        var(--chair-one) 10% 90%,
+        var(--accent-one) 90% 95%,
+        var(--chair-one) 95% 100%
+      );
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .helicopter__blades:after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+    .helicopter__skid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+    }
+    .helicopter__skid:after,
+    .helicopter__skid:before {
+      content: '';
+      position: absolute;
+      left: 16%;
+      width: 4%;
+      bottom: 0;
+      height: 400%;
+      background: var(--chair-four);
+      transform-origin: 50% 100%;
+      transform: rotateX(calc(25 * var(--coefficient, 1deg)));
+    }
+    .helicopter__skid:before {
+      left: 56%;
+    }
+    .helicopter__skid--left {
+      transform: translate3d(0, 0, calc(var(--base-size) * 0.4vmin));
+    }
+    .helicopter__skid--right {
+      --coefficient: -1deg;
+      transform: translate3d(0, 0, calc(var(--base-size) * -0.4vmin));
+    }
+    .helicopter__dashboard {
+      position: absolute;
+      left: 2%;
+      top: 50%;
+      width: 16%;
+      height: 38%;
+    }
+
+    .cuboid--cockpit {
+      --thickness: calc(var(--base-size) * 0.6);
+    }
+    .cuboid--cockpit div {
+      background: var(--helicopter-four);
+    }
+    .cuboid--cockpit div:nth-of-type(1) {
+      background: linear-gradient(
+          90deg,
+          var(--screen-one) 0 50%,
+          var(--helicopter-one) 50% 100%
+        ) 50% 50%/100% 100% no-repeat;
+    }
+    .cuboid--cockpit div:nth-of-type(2):after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: calc(100% - 1px);
+      width: calc(100% - 1px);
+      background: #914db3;
+      transform: translate3d(
+        -50%,
+        -50%,
+        calc(var(--helicopter-width) * -0.27)
+      );
+    }
+    .cuboid--cockpit div:nth-of-type(4) {
+      background: transparent;
+      background: linear-gradient(
+          var(--screen-two) 0% 80%,
+          var(--helicopter-one) 80% 100%
+        ) 50% 50%/100% 100% no-repeat;
+    }
+    .cuboid--cockpit div:nth-of-type(5) {
+      background: transparent;
+      background: linear-gradient(
+            var(--helicopter-three),
+            var(--helicopter-three)
+          ) 100% 50%/50% 100% no-repeat, linear-gradient(
+            var(--screen-three) 0% 80%,
+            var(--helicopter-three) 80% 100%
+          ) 0% 50%/50% 100% no-repeat;
+    }
+    .cuboid--cockpit div:nth-of-type(5):after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      height: 50%;
+      width: 25%;
+      right: 15%;
+      transform: translate3d(0%, -60%, 1px) scale(0.75);
+      filter: saturate(0.5);
+    }
+    .cuboid--cockpit div:nth-of-type(6) {
+      background: transparent;
+      background: linear-gradient(
+            var(--helicopter-two),
+            var(--helicopter-two)
+          ) 0 50%/50% 100% no-repeat, linear-gradient(
+            var(--screen-four) 0% 80%,
+            var(--helicopter-two) 80% 100%
+          ) 100% 50%/50% 100% no-repeat;
+    }
+    .cuboid--cockpit div:nth-of-type(6):after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      height: 50%;
+      width: 25%;
+      left: 15%;
+      transform: translate3d(0%, -60%, 1px) scale(0.75);
+      filter: saturate(0.5);
+    }
+    .cuboid--tail {
+      --thickness: calc(var(--base-size) * 0.4);
+      --clip: polygon(0 0, 100% 40%, 100% 60%, 0 100%);
+    }
+    .cuboid--tail div {
+      background: var(--accent-four);
+    }
+    .cuboid--tail div:nth-of-type(1) {
+      background: var(--accent-one);
+      -webkit-clip-path: var(--clip);
+      clip-path: var(--clip);
+    }
+    .cuboid--tail div:nth-of-type(2) {
+      background: var(--accent-one);
+      background: linear-gradient(
+        90deg,
+        transparent 0 40%,
+        var(--accent-four) 40% 60%,
+        transparent 60% 100%
+      );
+    }
+    .cuboid--tail div:nth-of-type(3) {
+      background: var(--accent-two);
+      -webkit-clip-path: var(--clip);
+      clip-path: var(--clip);
+    }
+    .cuboid--tail div:nth-of-type(4) {
+      background: var(--accent-three);
+    }
+    .cuboid--tail div:nth-of-type(5) {
+      background: transparent;
+    }
+    .cuboid--tail div:nth-of-type(5):after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: var(--accent-three);
+      transform-origin: 0 50%;
+      transform: rotateY(10deg);
+    }
+    .cuboid--tail div:nth-of-type(6) {
+      background: transparent;
+    }
+    .cuboid--tail div:nth-of-type(6):after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: var(--accent-three);
+      transform-origin: 100% 50%;
+      transform: rotateY(-10deg);
+    }
+    .cuboid--stabilizer {
+      --thickness: calc(var(--base-size) * 0.4);
+    }
+    .cuboid--stabilizer div {
+      background: var(--helicopter-four);
+    }
+    .cuboid--stabilizer div:nth-of-type(1) {
+      background: var(--helicopter-one);
+    }
+    .cuboid--stabilizer div:nth-of-type(3) {
+      background: var(--helicopter-two);
+    }
+    .cuboid--stabilizer div:nth-of-type(4) {
+      background: var(--helicopter-three);
+    }
+    .cuboid--fin {
+      --thickness: calc(var(--base-size) * 0.1);
+    }
+    .cuboid--fin div {
+      background: var(--helicopter-four);
+    }
+    .cuboid--fin div:nth-of-type(1) {
+      background: linear-gradient(
+        90deg,
+        transparent 0 50%,
+        var(--helicopter-one) 50% 100%
+      );
+    }
+    .cuboid--fin div:nth-of-type(3) {
+      background: var(--helicopter-two);
+    }
+    .cuboid--fin div:nth-of-type(4) {
+      background: transparent;
+    }
+    .cuboid--fin div:nth-of-type(4):after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      background: var(--helicopter-two);
+      height: 110%;
+      width: 100%;
+      transform-origin: 50% 100%;
+      transform: rotateX(-24deg);
+    }
+    .cuboid--fin div:nth-of-type(5) {
+      background: var(--helicopter-three);
+      --clip: polygon(0 100%, 50% 0, 100% 0, 100% 100%);
+      -webkit-clip-path: var(--clip);
+      clip-path: var(--clip);
+    }
+    .cuboid--fin div:nth-of-type(6) {
+      background: var(--helicopter-three);
+      --clip: polygon(0 0%, 50% 0, 100% 100%, 0 100%);
+      -webkit-clip-path: var(--clip);
+      clip-path: var(--clip);
+    }
+    .cuboid--skid {
+      --thickness: calc(var(--base-size) * 0.06);
+    }
+    .cuboid--skid div {
+      background: var(--chair-four);
+    }
+    .cuboid--skid div:nth-of-type(1) {
+      background: var(--chair-one);
+    }
+    .cuboid--skid div:nth-of-type(3) {
+      background: var(--chair-two);
+    }
+    .cuboid--skid div:nth-of-type(4) {
+      background: var(--chair-three);
+    }
+    .cuboid--dashboard {
+      --thickness: calc(var(--base-size) * 0.52);
+    }
+    .cuboid--dashboard div {
+      background: var(--dash-four);
+    }
+    .cuboid--dashboard div:nth-of-type(1) {
+      background: var(--dash-one);
+    }
+    .cuboid--dashboard div:nth-of-type(3) {
+      background: var(--dash-two);
+    }
+    .cuboid--dashboard div:nth-of-type(4) {
+      background: var(--dash-three);
+    }
+    .cuboid--chair {
+      --thickness: calc(var(--base-size) * 0.4);
+    }
+    .cuboid--chair div {
+      background: var(--chair-four);
+    }
+    .cuboid--chair div:nth-of-type(1) {
+      background: var(--chair-one);
+    }
+    .cuboid--chair div:nth-of-type(3) {
+      background: var(--chair-two);
+    }
+    .cuboid--chair div:nth-of-type(4) {
+      background: var(--chair-three);
+    }
+    .cuboid--wing {
+      --thickness: calc(var(--base-size) * 1.1);
+    }
+    .cuboid--wing div {
+      background: var(--accent-four);
+    }
+    .cuboid--wing div:nth-of-type(1) {
+      background: var(--accent-one);
+    }
+    .cuboid--wing div:nth-of-type(3) {
+      background: var(--accent-two);
+    }
+    .cuboid--wing div:nth-of-type(4) {
+      background: var(--accent-three);
+    }
+    .cuboid--rotor {
+      --thickness: calc(var(--base-size) * 0.14);
+    }
+    .cuboid--rotor div {
+      background: var(--dash-four);
+    }
+    .cuboid--rotor div:nth-of-type(1) {
+      background: var(--dash-one);
+    }
+    .cuboid--rotor div:nth-of-type(3) {
+      background: var(--dash-two);
+    }
+    .cuboid--rotor div:nth-of-type(4) {
+      background: var(--dash-three);
+    }
+    .cuboid--launcher {
+      --thickness: calc(var(--base-size) * 0.08);
+    }
+    .cuboid--launcher div {
+      background: var(--rocket-four);
+    }
+    .cuboid--launcher div:nth-of-type(1) {
+      background: var(--rocket-one);
+    }
+    .cuboid--launcher div:nth-of-type(3) {
+      background: var(--rocket-two);
+    }
+    .cuboid--launcher div:nth-of-type(4) {
+      background: var(--rocket-three);
+    }
+    .cuboid--light {
+      --thickness: calc(var(--base-size) * 0.035);
+    }
+    .cuboid--light div {
+      background: hsla(var(--hue, 10), 90%, 50%, var(--alpha, 0));
+    }
+
+
+    .helicopter__ammo {
+       height: 50%;
+       width: 30%;
+       position: absolute;
+       top: 50%;
+       left: 0;
+       transform: translate(0, -50%);
+     }
+     .cuboid--ammo {
+       --thickness: calc(var(--base-size) * 0.05);
+     }
+     .cuboid--ammo div {
+       background: hsl(var(--hue), 80%, 80%);
+     }
+
+      @-webkit-keyframes blades {
+      to {
+        transform: translate(-50%, -50%) rotateX(90deg) translate3d(0, 0, 1px)
+          rotate(-360deg);
+      }
+    }
+    @keyframes blades {
+      to {
+        transform: translate(-50%, -50%) rotateX(90deg) translate3d(0, 0, 1px)
+          rotate(-360deg);
+      }
+    }
+    
+    @property --color-1 {
+      syntax: "<color>";
+      inherits: false;
+      initial-value: hsl(98 100% 62%);
+    }
+    @property --color-2 {
+      syntax: "<color>";
+      inherits: false;
+      initial-value: hsl(204 100% 59%);
+    }
+    @-webkit-keyframes gradient-change {
+      to {
+        --color-1: hsl(210 100% 59%);
+        --color-2: hsl(310 100% 59%);
+      }
+    }
+    @keyframes gradient-change {
+      to {
+        --color-1: hsl(210 100% 59%);
+        --color-2: hsl(310 100% 59%);
+      }
+    }
+
+    article {
+      -webkit-animation: gradient-change 2s linear infinite alternate;
+      animation: gradient-change 2s linear infinite alternate;
+
+      background: linear-gradient(
+        to right in oklch,
+        var(--color-1),
+        var(--color-2)
+      );
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      background-clip: text;
+      color: transparent;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.querySelector('.auth-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        
+        loginForm.addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            if (!usernameInput.value.trim()) {
+                isValid = false;
+                showError(usernameInput, '请输入用户名');
+            } else {
+                removeError(usernameInput);
+            }
+            
+            if (!passwordInput.value.trim()) {
+                isValid = false;
+                showError(passwordInput, '请输入密码');
+            } else {
+                removeError(passwordInput);
+            }
+            
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+        
+        function showError(input, message) {
+            const formGroup = input.closest('.form-group');
+            const error = formGroup.querySelector('.error-message') || document.createElement('div');
+            
+            error.className = 'error-message';
+            error.textContent = message;
+            error.style.color = 'var(--danger-color)';
+            error.style.fontSize = '0.875rem';
+            error.style.marginTop = '0.25rem';
+            
+            if (!formGroup.querySelector('.error-message')) {
+                formGroup.appendChild(error);
+            }
+            
+            input.style.borderColor = 'var(--danger-color)';
+        }
+        
+        function removeError(input) {
+            const formGroup = input.closest('.form-group');
+            const error = formGroup.querySelector('.error-message');
+            
+            if (error) {
+                formGroup.removeChild(error);
+            }
+            
+            input.style.borderColor = '';
+        }
+    });
+</script>
+<script type="module">
+  import gsap from 'https://cdn.skypack.dev/gsap@3.11.0';
+  let FIRING = false;
+  const BOUNDS = 50;
+  document.addEventListener('pointermove', ({ x, y }) => {
+    const newX = gsap.utils.mapRange(
+      0,
+      window.innerWidth,
+      -BOUNDS,
+      BOUNDS,
+      x
+    );
+    const newY = gsap.utils.mapRange(
+      0,
+      window.innerHeight,
+      BOUNDS,
+      -BOUNDS,
+      y
+    );
+    gsap.set(document.documentElement, {
+      '--rotate-x': 0.5 * newY,
+      '--rotate-y': 120 + newX,
+    });
+  });
+  const LEFT_LAUNCHER = document.querySelector(
+    '.helicopter__launcher--left'
+  );
+  const RIGHT_LAUNCHER = document.querySelector(
+    '.helicopter__launcher--right'
+  );
+
+  gsap.ticker.add((time, deltaTime, frame) => {
+    if (FIRING) {
+      const AMMO = document.createElement('div');
+      AMMO.innerHTML = `
+        <div class="cuboid cuboid--ammo">
+          <div class="cuboid__side"></div>
+          <div class="cuboid__side"></div>
+          <div class="cuboid__side"></div>
+          <div class="cuboid__side"></div>
+          <div class="cuboid__side"></div>
+          <div class="cuboid__side"></div>
+        </div>
+      `;
+      AMMO.className = 'helicopter__ammo';
+      AMMO.style.setProperty('--hue', Math.random() * 360);
+      if (frame % 2 === 0) LEFT_LAUNCHER.appendChild(AMMO);
+      else RIGHT_LAUNCHER.appendChild(AMMO);
+
+      gsap.to(AMMO, {
+        xPercent: () => gsap.utils.random(-3000, -2000),
+        onComplete: () => AMMO.remove(),
+      });
+    }
+  });
+
+  gsap.ticker.fps(24);
+
+  document.addEventListener('pointerdown', () => {
+    FIRING = true;
+  });
+  document.addEventListener('pointerup', () => {
+    FIRING = false;
+  });
+
+  window.__THEME = 'LIGHT';
+  document.documentElement.style.setProperty('--on', '1');
+  window.localStorage.removeItem('THEME'); 
+</script>
+{% endblock %}
