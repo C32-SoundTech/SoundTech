@@ -1,6 +1,0 @@
-[LOG_CONFIG]
-[LOG_CONFIG.BASIC_CONFIG]
-log_level = "INFO"
-log_path = "./intelligence/log"
-log_rotation = "100 MB"
-log_retention = "7 days"
