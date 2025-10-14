@@ -1,4 +1,7 @@
 # 安装、部署脚本（可实现在Windows系统上从零一键运行）
+# Get-ExecutionPolicy
+# Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
 Clear-Host
 Write-Host "Downloading SoundTech V1.0.0 Windows version..."
 curl https://gitee.com/dingdust/SoundTech-Release/raw/main/V1.0.0-Windows.zip -o .\one-click-to-install.zip
@@ -27,4 +30,4 @@ curl https://gitee.com/dingdust/SoundTech-Release/raw/main/get-pip.py -o .\get-p
 Set-Location ..
 
 Clear-Host
-.\python314-embed\python.exe .\app.py
+.\python314-embed\python.exe .\app.py --port 8888
