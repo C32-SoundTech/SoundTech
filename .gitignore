@@ -1,9 +1,9 @@
 .conda/
 .idea/
-.history/
 database.db
+.venv/
+logs
 ~*
-~.log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

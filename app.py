@@ -2,6 +2,7 @@ import os
 import json
 import random
 import logging
+import argparse
 import logging.handlers
 from datetime import UTC, datetime, timedelta
 
@@ -984,7 +985,11 @@ def setup_logging():
 
 if __name__ == '__main__':
     setup_logging()
-    app.run(host='0.0.0.0', port=443, ssl_context=('./static/localhost.crt', './static/localhost.key'))
-
-    # from waitress import serve
-    # serve(app, host='0.0.0.0', port=80)
+    parser = argparse.ArgumentParser(description='SoundTech 声像科技')
+    parser.add_argument('--host', default='0.0.0.0', help='监听主机地址')
+    parser.add_argument('--port', type=int, default=443, help='监听端口号')
+    parser.add_argument('--cert', default='./static/localhost.crt', help='SSL 证书文件路径')
+    parser.add_argument('--key', default='./static/localhost.key', help='SSL 密钥文件路径')
+    args = parser.parse_args()
+    
+    app.run(host=args.host, port=args.port, ssl_context=(args.cert, args.key))
