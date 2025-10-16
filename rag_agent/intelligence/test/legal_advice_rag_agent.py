@@ -1,12 +1,13 @@
-import jieba
 import warnings
-jieba.setLogLevel(jieba.logging.INFO)
 warnings.filterwarnings("ignore", module="jieba")
 warnings.filterwarnings("ignore", module="pydantic")
 
-from agentuniverse.agent.output_object import OutputObject
+import jieba
+jieba.setLogLevel(jieba.logging.INFO)
+
 from agentuniverse.agent.agent import Agent
 from agentuniverse.agent.agent_manager import AgentManager
+from agentuniverse.agent.output_object import OutputObject
 from agentuniverse.base.agentuniverse import AgentUniverse
 
 AgentUniverse().start(config_path='../../config/config.toml', core_mode=True)
