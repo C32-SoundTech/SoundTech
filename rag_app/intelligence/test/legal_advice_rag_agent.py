@@ -1,5 +1,9 @@
 import warnings
+warnings.filterwarnings("ignore", module="jieba")
 warnings.filterwarnings("ignore", module="pydantic")
+
+import jieba
+jieba.setLogLevel(jieba.logging.INFO)
 
 from agentuniverse.agent.output_object import OutputObject
 from agentuniverse.agent.agent import Agent
@@ -21,10 +25,6 @@ def chat(question: str):
     question = f"\nYour event is :\n"
     question += output_object.get_data('input')
     print(question)
-
-    background_info = f"\nRetrieved background is :\n"
-    background_info += output_object.get_data('background').replace("\n","")
-    print(background_info)
 
     res_info = f"\nRag chat bot execution result is :\n"
     res_info += output_object.get_data('output')

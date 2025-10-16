@@ -1,12 +1,11 @@
 [BASE_INFO]
-appname = 'demo_app'
+appname = 'rag_app'
 
 [CORE_PACKAGE]
 default = ['rag_app.intelligence.agentic']
 agent = ['rag_app.intelligence.agentic.agent']
 knowledge = ['rag_app.intelligence.agentic.knowledge']
 llm = ['rag_app.intelligence.agentic.llm']
-tool = ['rag_app.intelligence.agentic.tool']
 memory = ['rag_app.intelligence.agentic.memory']
 prompt = ['rag_app.intelligence.agentic.prompt']
 store = ['rag_app.intelligence.agentic.knowledge.store']

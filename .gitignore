@@ -4,7 +4,6 @@ database.db
 .venv/
 logs*
 ~*
-tools/zentao_auto_login.py
 python-3.11.9*
 
 # Byte-compiled / optimized / DLL files
