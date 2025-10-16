@@ -1,0 +1,19 @@
+[BASE_INFO]
+appname = 'rag_agent'
+
+[CORE_PACKAGE]
+default = ['rag_agent.intelligence.agentic']
+agent = ['rag_agent.intelligence.agentic.agent']
+knowledge = ['rag_agent.intelligence.agentic.knowledge']
+store = ['rag_agent.intelligence.agentic.knowledge.store']
+doc_processor = ['rag_agent.intelligence.agentic.knowledge.doc_processor']
+query_paraphraser = ['rag_agent.intelligence.agentic.knowledge.query_paraphraser']
+rag_router = ['rag_agent.intelligence.agentic.knowledge.rag_router']
+llm = ['rag_agent.intelligence.agentic.llm']
+memory = ['rag_agent.intelligence.agentic.memory']
+memory_storage = ['rag_agent.intelligence.agentic.memory.memory_storage']
+prompt = ['rag_agent.intelligence.agentic.prompt']
+
+[SUB_CONFIG_PATH]
+log_config_path = './log_config.toml'
+custom_key_path = './custom_key.toml'
