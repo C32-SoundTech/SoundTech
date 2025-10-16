@@ -1,0 +1,67 @@
+# Git相关文件
+.git
+.gitignore
+
+# Python相关文件
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# 开发环境文件
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# 操作系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 文档和说明文件
+docs/
+*.md
+README*
+LICENSE
+
+# 临时文件
+*.tmp
+*.temp
+
+# 日志文件
+logs/
+*.log
+
+# 测试文件
+test/
+tests/
+*_test.py
+test_*.py
+
+# 其他不需要的文件
+.env
+.env.local
+.env.*.local
+node_modules/
