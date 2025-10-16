@@ -1,0 +1,20 @@
+[BASE_INFO]
+appname = 'demo_app'
+
+[CORE_PACKAGE]
+default = ['rag_app.intelligence.agentic']
+agent = ['rag_app.intelligence.agentic.agent']
+knowledge = ['rag_app.intelligence.agentic.knowledge']
+llm = ['rag_app.intelligence.agentic.llm']
+tool = ['rag_app.intelligence.agentic.tool']
+memory = ['rag_app.intelligence.agentic.memory']
+prompt = ['rag_app.intelligence.agentic.prompt']
+store = ['rag_app.intelligence.agentic.knowledge.store']
+rag_router = ['rag_app.intelligence.agentic.knowledge.rag_router']
+doc_processor = ['rag_app.intelligence.agentic.knowledge.doc_processor']
+query_paraphraser = ['rag_app.intelligence.agentic.knowledge.query_paraphraser']
+memory_storage = ['rag_app.intelligence.agentic.memory.memory_storage']
+
+[SUB_CONFIG_PATH]
+log_config_path = './log_config.toml'
+custom_key_path = './custom_key.toml'
