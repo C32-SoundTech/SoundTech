@@ -8,6 +8,7 @@ knowledge = ['rag_agent.intelligence.agentic.knowledge']
 store = ['rag_agent.intelligence.agentic.knowledge.store']
 llm = ['rag_agent.intelligence.agentic.llm']
 prompt = ['rag_agent.intelligence.agentic.prompt']
+tool = ['rag_agent.intelligence.agentic.tool']
 
 [SUB_CONFIG_PATH]
 log_config_path = './log_config.toml'

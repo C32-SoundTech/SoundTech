@@ -21,8 +21,8 @@ profile:
     name: 'qwen_flash'
     model_name: 'qwen-flash'
 action:
-  # tool:
-  #   - 'google_search_tool'
+  tool:
+    - 'quark_search_tool'
   knowledge:
     - 'maoist_knowledge'
 metadata:
