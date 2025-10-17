@@ -9,5 +9,6 @@ __pycache__/
 
 *.log
 
-agentUniverse
+agentUniverse/
 */logs/
+rag_agent/resourcess
