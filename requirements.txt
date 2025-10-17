@@ -1,4 +1,1 @@
-flask
-
-waitress; sys_platform == "win32"
-gunicorn; sys_platform == "linux"
+agentUniverse

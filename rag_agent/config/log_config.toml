@@ -1,0 +1,6 @@
+[LOG_CONFIG]
+[LOG_CONFIG.BASIC_CONFIG]
+log_level = "INFO"
+log_path = "../logs"
+log_rotation = "10 MB"
+log_retention = "7 days"

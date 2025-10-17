@@ -1,0 +1,14 @@
+[BASE_INFO]
+appname = 'rag_agent'
+
+[CORE_PACKAGE]
+default = ['rag_agent.intelligence.agentic']
+agent = ['rag_agent.intelligence.agentic.agent']
+knowledge = ['rag_agent.intelligence.agentic.knowledge']
+store = ['rag_agent.intelligence.agentic.knowledge.store']
+llm = ['rag_agent.intelligence.agentic.llm']
+prompt = ['rag_agent.intelligence.agentic.prompt']
+
+[SUB_CONFIG_PATH]
+log_config_path = './log_config.toml'
+custom_key_path = './custom_key.toml'

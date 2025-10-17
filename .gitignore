@@ -8,3 +8,6 @@ python-3.11.9*
 __pycache__/
 
 *.log
+
+agentUniverse
+*/logs/
