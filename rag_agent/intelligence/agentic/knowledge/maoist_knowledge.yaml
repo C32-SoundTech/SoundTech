@@ -3,6 +3,12 @@ description: "毛泽东思想与中国特色社会主义理论体系概论相关
 stores:
     - "maoist_chroma_store"
     - "maoist_sqlite_store"
+insert_processors:
+    - "recursive_character_text_splitter"
+readers:
+    pdf: "default_pdf_reader"
+post_processors:
+    - "dashscope_reranker"
 metadata:
   type: 'KNOWLEDGE'
   module: 'rag_agent.intelligence.agentic.knowledge.maoist_knowledge'

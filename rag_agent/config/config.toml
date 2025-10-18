@@ -7,10 +7,15 @@ agent = ['rag_agent.intelligence.agentic.agent']
 knowledge = ['rag_agent.intelligence.agentic.knowledge']
 store = ['rag_agent.intelligence.agentic.knowledge.store']
 llm = ['rag_agent.intelligence.agentic.llm']
-memory = ['rag_agent.intelligence.agentic.memory']
-memory_storage = ['rag_agent.intelligence.agentic.memory.memory_storage']
 prompt = ['rag_agent.intelligence.agentic.prompt']
 tool = ['rag_agent.intelligence.agentic.tool']
+
+[CONVERSATION_MEMORY]
+activate = true
+instance_name = 'global_rag_memory'
+logging = true
+conversation_format = 'cn'
+collection_types = ['agent','knowledge','llm','tool']
 
 [SUB_CONFIG_PATH]
 log_config_path = './log_config.toml'
