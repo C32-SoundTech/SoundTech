@@ -10,12 +10,13 @@ llm = ['rag_agent.intelligence.agentic.llm']
 prompt = ['rag_agent.intelligence.agentic.prompt']
 tool = ['rag_agent.intelligence.agentic.tool']
 
+[DB]
+system_db_uri = './rag_agent/intelligence/db'
+
 [CONVERSATION_MEMORY]
 activate = true
-instance_name = 'global_rag_memory'
 logging = true
 conversation_format = 'cn'
-collection_types = ['agent','knowledge','llm','tool']
 
 [SUB_CONFIG_PATH]
 log_config_path = './log_config.toml'

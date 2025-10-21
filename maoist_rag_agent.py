@@ -5,10 +5,10 @@ warnings.filterwarnings("ignore", module="pydantic")
 import jieba
 jieba.setLogLevel(jieba.logging.INFO)
 
-from agentuniverse.agent.output_object import OutputObject
 from agentuniverse.agent.agent import Agent
 from agentuniverse.agent.agent_manager import AgentManager
 from agentuniverse.base.agentuniverse import AgentUniverse
+from agentuniverse.agent.output_object import OutputObject
 
 AgentUniverse().start(config_path='rag_agent/config/config.toml', core_mode=True)
 
