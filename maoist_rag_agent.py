@@ -10,7 +10,7 @@ from agentuniverse.agent.agent import Agent
 from agentuniverse.agent.agent_manager import AgentManager
 from agentuniverse.base.agentuniverse import AgentUniverse
 
-AgentUniverse().start(config_path='../config/config.toml', core_mode=True)
+AgentUniverse().start(config_path='rag_agent/config/config.toml', core_mode=True)
 
 
 def chat(question: str):
@@ -31,4 +31,4 @@ def chat(question: str):
 
 
 if __name__ == '__main__':
-    chat("科学地评价毛泽东同志一生的贡献")
+    chat("'三个代表'重要思想的核心内容")

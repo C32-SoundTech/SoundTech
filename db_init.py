@@ -10,10 +10,10 @@ from agentuniverse.agent.action.knowledge.knowledge_manager import KnowledgeMana
 
 
 if __name__ == '__main__':
-    AgentUniverse().start(config_path='../config/config.toml', core_mode=True)
+    AgentUniverse().start(config_path='rag_agent/config/config.toml', core_mode=True)
     maoist_store_list = ["maoist_chroma_store", "maoist_sqlite_store"]
     maoist_knowledge = KnowledgeManager().get_instance_obj("maoist_knowledge")
     maoist_knowledge.insert_knowledge(
-        source_path="../resources/毛泽东思想与中国特色社会主义理论体系概论.pdf",
+        source_path="rag_agent/resources/毛泽东思想与中国特色社会主义理论体系概论.pdf",
         stores=maoist_store_list
     )
