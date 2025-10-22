@@ -36,7 +36,108 @@
 
 > 开发具备个性化学习规划、智能知识答疑与训练、实时进度追踪、情感交互与激励等功能的 AI 学习搭子。 
 
+## 声像科技 SoundTech
+
 ---
+
+![Static Badge](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python) ![Static Badge](https://img.shields.io/badge/Flask-3.1.2-green?logo=Flask) ![Static Badge](https://img.shields.io/badge/Jinja2-3.1.6-white?logo=Jinja)
+
+![GitHub Created At](https://img.shields.io/github/created-at/C32-SoundTech/SoundTech?logo=Github) ![GitHub contributors](https://img.shields.io/github/contributors/C32-SoundTech/SoundTech?logo=Github) ![GitHub last commit](https://img.shields.io/github/last-commit/C32-SoundTech/SoundTech?logo=Github)
+
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/C32-SoundTech/SoundTech?authorFilter=Dingdust&logo=Github) ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/C32-SoundTech/SoundTech?authorFilter=GloriousEpiphany&logo=Github) ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/C32-SoundTech/SoundTech?authorFilter=wswCR7&logo=Github) ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/C32-SoundTech/SoundTech?authorFilter=2778582993&logo=Github)
+
+## 智能教学平台 · 阶段交付成果物-说明
+
+### 整体背景
+
+> 随着人工智能技术与教育领域的深度融合，学习场景正经历深刻变革。在信息爆炸时代，知识更新速度极快，学习者面临海量信息筛选与高效吸收的难题。传统 "千人一面" 的学习模式难以匹配个体学习节奏与偏好，学习过程中存在的孤独感、缺乏即时反馈与个性化指导等问题，也严重阻碍了学习者的进步。在此形势下，亟需借助人工智能技术，为学习者提供更贴合需求的学习支持。 
+
+### 问题说明
+
+> 学习者面临海量信息难以筛选、传统学习方式无法匹配个体需求、学习过程孤独缺乏陪伴、缺乏即时反馈与个性化指导、学习进度难以把控等问题。在知识吸收效率、学习动力维持、学习效果保障等方面存在明显不足，亟需智能化解决方案改善学习体验。
+
+### 用户期望
+
+> 学习者期望获得贴合自身情况的个性化学习规划；
+>
+> 能随时获得准确的知识答疑与针对性训练；清晰了解学习进度，提前预知学习风险；在学习过程中获 得情感陪伴与激励，缓解学习压力，保持学习热情。  
+>
+> 分两个进阶的学习场景设计：
+>
+> 一阶段学习场景是面向校园内所学知识的以顺利通过考试&毕业为目标； 
+>
+> 二阶段学习场景是面向就业市场所需的技能以找到合适的工作就业为目标； 
+>
+> 两个阶段如果能够衔接融合在一起，就可以很好的解决高校教学与市场化需求脱节的问题。
+
+### 开发说明
+
+> 开发具备个性化学习规划、智能知识答疑与训练、实时进度追踪、情感交互与激励等功能的 AI 学习搭子。 
+
+---
+
+## 环境配置与运行说明
+
+### 系统要求
+- Python 3.11+
+- Windows/Linux/macOS
+
+### 依赖安装
+
+项目使用了AgentUniverse框架和LangChain生态系统。为确保兼容性，请严格按照以下版本安装依赖：
+
+```bash
+pip install -r requirements.txt
+```
+
+**重要提示：** 由于AgentUniverse 0.0.18版本对LangChain版本有严格要求，请确保安装以下特定版本：
+- agentUniverse==0.0.18
+- langchain==0.1.20
+- langchain-community==0.0.38
+- langchain-core==0.1.52
+- langchain-text-splitters==0.0.2
+- langsmith==0.1.147
+
+### 数据库初始化
+
+在首次运行应用前，需要初始化知识库：
+
+```bash
+python db_init.py
+```
+
+此脚本将：
+1. 启动AgentUniverse框架
+2. 加载毛泽东思想与中国特色社会主义理论体系概论PDF文档
+3. 将知识存储到Chroma和SQLite存储中
+
+### 运行应用
+
+```bash
+python app.py
+```
+
+应用将在本地启动，默认端口为5000。
+
+### 故障排除
+
+#### 模块导入错误
+如果遇到 `ModuleNotFoundError: No module named 'langchain_community.adapters'` 错误：
+
+1. 检查当前安装的LangChain版本：
+   ```bash
+   pip list | grep langchain
+   ```
+
+2. 如果版本不匹配，请重新安装正确版本：
+   ```bash
+   pip install langchain==0.1.20 langchain-community==0.0.38 langchain-core==0.1.52 langchain-text-splitters==0.0.2
+   ```
+
+3. 如果存在版本冲突，可能需要卸载冲突的包：
+   ```bash
+   pip uninstall langchain-classic -y
+   ```
 
 #### 基线（V1.0）版本
 
