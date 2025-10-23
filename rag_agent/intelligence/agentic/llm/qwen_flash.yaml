@@ -1,7 +1,7 @@
 name: 'qwen_flash'
 description: 'qwen-flash'
 model_name: 'qwen-flash'
-max_tokens: 4096
+max_tokens: 8192
 api_key: '${DASHSCOPE_API_KEY}'
 metadata:
   type: 'LLM'
