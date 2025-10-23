@@ -10,7 +10,7 @@ from agentuniverse.agent.agent_manager import AgentManager
 from agentuniverse.base.agentuniverse import AgentUniverse
 from agentuniverse.agent.output_object import OutputObject
 
-AgentUniverse().start(config_path='rag_agent/config/config.toml', core_mode=True)
+AgentUniverse().start(config_path='./config/config.toml', core_mode=True)
 
 
 def chat(question: str):

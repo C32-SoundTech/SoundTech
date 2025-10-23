@@ -1,0 +1,24 @@
+[BASE_INFO]
+appname = 'rag_agent'
+
+[CORE_PACKAGE]
+default = ['intelligence.agentic']
+agent = ['intelligence.agentic.agent']
+knowledge = ['intelligence.agentic.knowledge']
+store = ['intelligence.agentic.knowledge.store']
+llm = ['intelligence.agentic.llm']
+prompt = ['intelligence.agentic.prompt']
+tool = ['intelligence.agentic.tool']
+
+[DB]
+system_db_uri = './intelligence/db'
+
+[CONVERSATION_MEMORY]
+activate = true
+logging = true
+conversation_format = 'cn'
+collection_types = ['agent','knowledge','llm','tool']
+
+[SUB_CONFIG_PATH]
+log_config_path = './log_config.toml'
+custom_key_path = './custom_key.toml'

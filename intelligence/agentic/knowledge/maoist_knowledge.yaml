@@ -11,5 +11,5 @@ post_processors:
     - "dashscope_reranker"
 metadata:
   type: 'KNOWLEDGE'
-  module: 'rag_agent.intelligence.agentic.knowledge.maoist_knowledge'
+  module: 'intelligence.agentic.knowledge.maoist_knowledge'
   class: 'MaoistKnowledge'
