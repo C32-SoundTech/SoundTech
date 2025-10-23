@@ -1,10 +1,13 @@
-.conda/
 .idea/
 .venv/
+.conda/
+
 __pycache__/
-agentUniverse/
-*/logs/
+
+*logs/
 *.log
+*database.db
+
 ~*
+
 python-3.11.9*
-database.db
