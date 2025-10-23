@@ -7,3 +7,4 @@ agentUniverse/
 *.log
 ~*
 python-3.11.9*
+database.db

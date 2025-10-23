@@ -333,6 +333,41 @@ def only_wrong_mode():
     
     return render_template("question.html", question=question, is_favorite=is_fav)
 
+###################
+# AI Answer Route #
+###################
+
+@app.route("/ai_answer/<qid>", methods=['GET'])
+@login_required
+def ai_answer(qid):
+    """
+    AI题目答疑接口。
+    接收前端请求并提供AI答疑结果（占位实现）。
+    
+    Args:
+        qid: 题目 ID
+    """
+    user_id = get_user_id()
+    question = fetch_question(qid)
+    if not question:
+        flash("题目不存在", "error")
+        return redirect(url_for("index"))
+    
+    # 取得题目页所需的上下文并渲染占位答疑文本
+    answered, total = show_question_util_get(qid, user_id)
+    is_fav = is_favorite(user_id, qid)
+    # todo
+    print(question["stem"], question["answer"], question["options"])
+    ai_text = "AI题目答疑请求已发送。功能建设中。"
+    return render_template(
+        "question.html",
+        question=question,
+        answered=answered,
+        total=total,
+        is_favorite=is_fav,
+        ai_answer_text=ai_text
+    )
+
 #################
 # Browse Routes #
 #################
@@ -963,14 +998,14 @@ def log_response_info(response):
 # Application Entry Point #
 ###########################
 
-def setup_logging():
+def setup_logging(log_dir: str):
     """配置应用日志系统"""
-    os.makedirs('logs', exist_ok=True)
+    os.makedirs(log_dir, exist_ok=True)
     
     log_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
     file_handler = logging.handlers.TimedRotatingFileHandler(
-        'logs/soundtech.log',
+        os.path.join(log_dir, 'soundtech.log'),
         when='midnight',
         interval=1,
         backupCount=100,
@@ -979,17 +1014,17 @@ def setup_logging():
     file_handler.setFormatter(log_format)
     file_handler.setLevel(logging.INFO)
     
-    app.logger.setLevel(logging.DEBUG)
     app.logger.addHandler(file_handler)
 
 
 if __name__ == '__main__':
-    setup_logging()
     parser = argparse.ArgumentParser(description='SoundTech 声像科技')
     parser.add_argument('--host', default='0.0.0.0', help='监听主机地址')
     parser.add_argument('--port', type=int, default=443, help='监听端口号')
+    parser.add_argument('--logdir', default='./logs', help='日志文件目录')
     parser.add_argument('--cert', default='./static/localhost.crt', help='SSL 证书文件路径')
     parser.add_argument('--key', default='./static/localhost.key', help='SSL 密钥文件路径')
     args = parser.parse_args()
-    
+
+    setup_logging(args.logdir)
     app.run(host=args.host, port=args.port, ssl_context=(args.cert, args.key))
