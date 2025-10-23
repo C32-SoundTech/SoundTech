@@ -1,15 +1,13 @@
+# Python环境
 .idea/
 .venv/
 .conda/
-
-__pycache__/
-
-*logs/
-*.log
-database.db
-
-~*
-
 python-3.11.9*
-
+# Python缓存
+__pycache__/
+# 日志文件
+*logs/
+# 暂存文件
+~*
+# 其他
 zentaopm.py
