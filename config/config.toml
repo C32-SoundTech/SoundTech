@@ -2,16 +2,15 @@
 appname = 'rag_agent'
 
 [CORE_PACKAGE]
-default = ['intelligence.agentic']
-agent = ['intelligence.agentic.agent']
-knowledge = ['intelligence.agentic.knowledge']
-store = ['intelligence.agentic.knowledge.store']
-llm = ['intelligence.agentic.llm']
-prompt = ['intelligence.agentic.prompt']
-tool = ['intelligence.agentic.tool']
+default = ['agentic']
+agent = ['agentic.agent']
+knowledge = ['agentic.knowledge']
+store = ['agentic.knowledge.store']
+llm = ['agentic.llm']
+tool = ['agentic.tool']
 
 [DB]
-system_db_uri = './intelligence/db'
+system_db_uri = './static'
 
 [CONVERSATION_MEMORY]
 activate = true

@@ -8,5 +8,5 @@ tool_type: 'api'
 input_keys: ['input']
 metadata:
   type: 'TOOL'
-  module: 'intelligence.agentic.tool.quark_search_tool'
+  module: 'agentic.tool.quark_search_tool'
   class: 'QuarkSearchTool'
