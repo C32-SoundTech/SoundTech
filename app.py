@@ -21,6 +21,21 @@ app.secret_key = os.environ.get("SECRET_KEY", __name__)
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
 
+import warnings
+warnings.filterwarnings("ignore", module="jieba")
+warnings.filterwarnings("ignore", module="pydantic")
+
+import jieba
+jieba.setLogLevel(jieba.logging.INFO)
+
+from agentuniverse.agent.agent import Agent
+from agentuniverse.agent.agent_manager import AgentManager
+from agentuniverse.base.agentuniverse import AgentUniverse
+from agentuniverse.agent.output_object import OutputObject
+
+AgentUniverse().start(config_path='./config/config.toml', core_mode=True)
+agentserver: Agent = AgentManager().get_instance_obj('rag_agent')
+
 #########################
 # Authentication Routes #
 #########################
@@ -353,19 +368,19 @@ def ai_answer(qid):
         flash("题目不存在", "error")
         return redirect(url_for("index"))
     
-    # 取得题目页所需的上下文并渲染占位答疑文本
     answered, total = show_question_util_get(qid, user_id)
     is_fav = is_favorite(user_id, qid)
-    # todo
-    print(question["stem"], question["answer"], question["options"])
-    ai_text = "AI题目答疑请求已发送。功能建设中。"
+    ai_answer_input = f"请解析以下题目：\n{question['stem']}\n选项为：{json.dumps(question['options'], ensure_ascii=False)}\n答案为：{question['answer']}"
+    output_object: OutputObject = agentserver.run(input=ai_answer_input)
+    ai_answer_text = str(output_object.get_data('output'))
+    ai_answer_text = ai_answer_text.replace("**"," ")
     return render_template(
         "question.html",
         question=question,
         answered=answered,
         total=total,
         is_favorite=is_fav,
-        ai_answer_text=ai_text
+        ai_answer_text=ai_answer_text
     )
 
 #################

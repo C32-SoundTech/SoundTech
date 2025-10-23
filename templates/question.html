@@ -151,8 +151,8 @@
 {% if ai_answer_text %}
 <div class="card mt-3 p-3">
     <div class="card-title"><i class="fas fa-robot"></i> AI题目答疑</div>
-    <div class="card-subtitle">以下为该题目的答疑信息：</div>
-    <div class="mt-2">{{ ai_answer_text }}</div>
+    <div class="card-subtitle">以下为该题目的AI答疑信息：</div>
+    <div class="mt-2 ai-answer">{{ ai_answer_text }}</div>
 </div>
 {% endif %}
 
@@ -232,6 +232,11 @@
         .btn-group .btn {
             width: 100%;
         }
+    }
+
+    /* Preserve newline characters in AI answer */
+    .ai-answer {
+        white-space: pre-line;
     }
 </style>
 {% endblock %}
