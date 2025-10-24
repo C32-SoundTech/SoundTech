@@ -46,6 +46,19 @@
         </footer>
     </div>
     
-    {% block scripts %}{% endblock %}
+    <script>
+        // Flash消息自动消失
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+    </script>
+    {% block scripts %}
+    {% endblock %}
 </body>
 </html>

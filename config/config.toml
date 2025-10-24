@@ -7,7 +7,6 @@ agent = ['agentic.agent']
 knowledge = ['agentic.knowledge']
 store = ['agentic.knowledge.store']
 llm = ['agentic.llm']
-tool = ['agentic.tool']
 
 [DB]
 system_db_uri = './static'
@@ -16,7 +15,7 @@ system_db_uri = './static'
 activate = true
 logging = true
 conversation_format = 'cn'
-collection_types = ['agent','knowledge','llm','tool']
+collection_types = ['agent','knowledge','llm']
 
 [SUB_CONFIG_PATH]
 log_config_path = './log_config.toml'
