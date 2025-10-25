@@ -3,6 +3,7 @@
 .venv/
 .conda/
 python-3.11.9*
+python-3.12.9*
 # Python缓存
 __pycache__/
 # 日志文件
