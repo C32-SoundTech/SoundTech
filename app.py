@@ -12,6 +12,7 @@ from flask import flash, jsonify, url_for, redirect, render_template
 
 from werkzeug.security import check_password_hash
 
+from handlers.rubost import *
 from handlers.database import *
 from handlers.authentication import login_required, is_logged_in, get_user_id
 
@@ -20,13 +21,6 @@ app = Flask("SoundTech-声像科技")
 app.secret_key = os.environ.get("SECRET_KEY", __name__)
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=7)
-
-import warnings
-warnings.filterwarnings("ignore", module="jieba")
-warnings.filterwarnings("ignore", module="pydantic")
-
-import jieba
-jieba.setLogLevel(jieba.logging.INFO)
 
 from agentuniverse.agent.agent import Agent
 from agentuniverse.agent.agent_manager import AgentManager
@@ -371,9 +365,13 @@ def ai_answer(qid):
     answered, total = show_question_util_get(qid, user_id)
     is_fav = is_favorite(user_id, qid)
     ai_answer_input = f"请解析以下题目：\n{question['stem']}\n选项为：{json.dumps(question['options'], ensure_ascii=False)}\n答案为：{question['answer']}"
-    output_object: OutputObject = agentserver.run(input=ai_answer_input)
-    ai_answer_text = str(output_object.get_data('output'))
-    ai_answer_text = ai_answer_text.replace("**"," ")
+    try:
+        output_object: OutputObject = agentserver.run(input=ai_answer_input)
+        ai_answer_text = str(output_object.get_data('output'))
+        ai_answer_text = ai_answer_text.replace("**"," ")
+    except Exception as e:
+        flash(f"AI答疑调用失败：{str(e)}", "error")
+        ai_answer_text = f"AI答疑调用失败：{str(e)}"
     return render_template(
         "question.html",
         question=question,
