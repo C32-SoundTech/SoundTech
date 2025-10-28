@@ -63,12 +63,12 @@ Remove-Item -LiteralPath "$rootDir\static\chroma.zip" -Force -ErrorAction Silent
 
 Clear-Host
 $env:Path = "$pythonDir;$env:Path"
-python .\python-3.11.9\get-pip.py --no-warn-script-location 
+python .\python-3.11.9\get-pip.py --index-url https://pypi.tuna.tsinghua.edu.cn/simple/ --no-warn-script-location 
 Remove-Item -LiteralPath "$pythonDir\get-pip.py" -Force -ErrorAction SilentlyContinue -Confirm:$false
 
 Clear-Host
 $env:Path = "$pythonDir\Scripts;$env:Path"
-pip install agentuniverse==0.0.17 --index-url https://mirrors.aliyun.com/pypi/simple/ --no-warn-script-location
+pip install agentuniverse==0.0.18 --index-url https://pypi.tuna.tsinghua.edu.cn/simple/ --no-warn-script-location
 
 Clear-Host
 $api_key = Read-Host "Please enter your API key"
