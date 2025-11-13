@@ -1,6 +1,4 @@
 ### API 接口测试说明（V2.0.0）
-##### SoundTech® by Dingdust 2025.11.13
----
 * 本说明用于 V2.0.0 新增接口的冒烟与基础验证。
 ---
 * 开发默认 HTTPS：`https://localhost:443`（自签证书）；容器默认 HTTPS：`https://localhost:5000`；生产近似（waitress，HTTP）：`http://localhost:8000`。
