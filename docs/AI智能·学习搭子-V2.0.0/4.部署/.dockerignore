@@ -1,0 +1,34 @@
+# 忽略.git目录
+.git
+
+# 忽略Python缓存文件
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# 忽略IDE相关文件
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 忽略日志文件
+logs/
+*.log
+
+# 忽略数据库文件（在容器中重新初始化）
+static/database.db
+static/chroma.sqlite3
+
+# 忽略本地SSL证书（在容器中重新生成或使用默认）
+static/localhost.crt
+static/localhost.key
+
+# 忽略.DS_Store文件
+.DS_Store
+
+# 忽略node_modules（如果有的话）
+node_modules/
