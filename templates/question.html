@@ -16,6 +16,11 @@
 </div>
 {% endif %}
 
+{% if is_ai_answer_mode %}
+<div class="split-container">
+    <div class="split-left">
+{% endif %}
+
 {% if question %}
 <div class="question-container">
     <div class="question-header">
@@ -238,5 +243,59 @@
     .ai-answer {
         white-space: pre-line;
     }
+
+    /* AI Split Layout */
+    .split-container {
+        display: flex;
+        gap: 20px;
+        height: calc(100vh - 180px); /* Adjusted for progress bar height */
+    }
+    
+    .split-left {
+        flex: 1;
+        overflow-y: auto;
+        padding-right: 15px;
+    }
+    
+    .split-right {
+        flex: 0 0 40%;
+        max-width: 40%;
+        border-left: 1px solid var(--gray-300);
+        padding-left: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .ai-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+    @media (max-width: 992px) {
+        .split-container {
+            flex-direction: column;
+            height: auto;
+        }
+        
+        .split-right {
+            border-left: none;
+            border-top: 1px solid var(--gray-300);
+            padding-left: 0;
+            padding-top: 20px;
+            height: 600px;
+        }
+    }
 </style>
+
+{% if is_ai_answer_mode %}
+    </div>
+    <div class="split-right">
+        <iframe src="https://47.98.41.23" class="ai-iframe"></iframe>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}

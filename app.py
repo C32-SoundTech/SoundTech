@@ -378,7 +378,8 @@ def ai_answer(qid):
         answered=answered,
         total=total,
         is_favorite=is_fav,
-        ai_answer_text=ai_answer_text
+        ai_answer_text=ai_answer_text,
+        is_ai_answer_mode=True
     )
 
 #################
