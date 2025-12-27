@@ -1,0 +1,7 @@
+# Docker 环境 API Key 配置
+# API Key 通过环境变量注入，此处使用占位符
+
+[KEY_LIST]
+# 从环境变量读取 (在 docker-compose.yml 中配置)
+DASHSCOPE_API_KEY='${DASHSCOPE_API_KEY}'
+DASHSCOPE_API_BASE='${DASHSCOPE_API_BASE}'

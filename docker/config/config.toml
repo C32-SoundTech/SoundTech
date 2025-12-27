@@ -1,0 +1,25 @@
+# Docker 环境专用配置
+# 此文件会在构建时覆盖默认配置
+
+[BASE_INFO]
+appname = 'rag_agent'
+
+[CORE_PACKAGE]
+default = ['agentic']
+agent = ['agentic.agent']
+knowledge = ['agentic.knowledge']
+store = ['agentic.knowledge.store']
+llm = ['agentic.llm']
+
+[DB]
+system_db_uri = './static'
+
+[CONVERSATION_MEMORY]
+activate = true
+logging = true
+conversation_format = 'cn'
+collection_types = ['agent','knowledge','llm']
+
+[SUB_CONFIG_PATH]
+log_config_path = './log_config.toml'
+custom_key_path = './custom_key.toml'
