@@ -1,0 +1,82 @@
+# SoundTech 声像科技 - 生产环境 Docker 镜像
+# 多阶段构建，优化镜像大小
+
+# ==========================================
+# 阶段 1: 构建依赖
+# ==========================================
+FROM python:3.11-slim AS builder
+
+WORKDIR /build
+
+# 安装构建依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 创建虚拟环境
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 安装 Python 依赖
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# ==========================================
+# 阶段 2: 运行时镜像
+# ==========================================
+FROM python:3.11-slim AS runtime
+
+# 设置环境变量
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONIOENCODING=utf-8 \
+    TZ=Asia/Shanghai \
+    ANONYMIZED_TELEMETRY=False \
+    PATH="/opt/venv/bin:$PATH"
+
+# 安装运行时依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libsqlite3-0 \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --shell /bin/bash appuser
+
+WORKDIR /app
+
+# 从构建阶段复制虚拟环境
+COPY --from=builder /opt/venv /opt/venv
+
+# 复制应用代码
+COPY --chown=appuser:appuser app.py .
+COPY --chown=appuser:appuser config/ ./config/
+COPY --chown=appuser:appuser handlers/ ./handlers/
+COPY --chown=appuser:appuser agentic/ ./agentic/
+COPY --chown=appuser:appuser templates/ ./templates/
+COPY --chown=appuser:appuser resources/ ./resources/
+
+# 复制静态文件 (包含向量数据库、知识库等 AI 答疑必需文件)
+COPY --chown=appuser:appuser static/ ./static/
+
+# 复制 Docker 脚本
+COPY --chown=appuser:appuser docker/entrypoint.sh /entrypoint.sh
+COPY --chown=appuser:appuser docker/init-data.sh /app/docker/init-data.sh
+RUN chmod +x /entrypoint.sh /app/docker/init-data.sh
+
+# 创建必要目录
+RUN mkdir -p /app/logs /app/data && \
+    chown -R appuser:appuser /app
+
+# 切换到非 root 用户
+USER appuser
+
+# 暴露端口
+EXPOSE 443
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+    CMD curl -f -k https://localhost:443/login || exit 1
+
+# 入口点
+ENTRYPOINT ["/entrypoint.sh"]
